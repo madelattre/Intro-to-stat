@@ -1,0 +1,1202 @@
+---
+title: "Introduction to statistics"
+subtitle: "Biomedical Engineering - academic year 2023-2024"
+format: 
+  inrae-revealjs:
+    footer: ""
+    chalkboard: true
+    fontsize: 24pt
+author: Maud Delattre 
+execute:
+  echo: false
+---
+
+```{r}
+#| label: loadlibrary
+library(pastecs)
+library(ggplot2)
+library(cowplot)
+library(tidyverse)
+library(medicaldata)
+```
+
+## Topics covered in this course
+
+-   Descriptive statistics
+
+-   Basics of probability
+
+-   Estimation
+
+-   Confidence intervals
+
+-   Tests
+
+-   Advanced exploratory data analysis tools
+
+## What will you learn in this course?
+
+-   [**Data exploration:**]{style="color: blue"} describe and understand the structure of a dataset.
+
+-   [**Modelling:**]{style="color: blue"} move from a biological question to a statistical model accounting for the nature of the data and sources of variability.
+
+-   [**Statistical inference:**]{style="color: blue"} get some informations about the (unknown) parameters of the model:
+
+    -   estimating the parameter,
+
+    -   give a (restricted) range of possible values for the parameter,
+
+    -   decide whether the parameter belongs to a given interval or not.
+
+-   [**R programming:**]{style="color: blue"} data analysis.
+
+# First session: descriptive statistics
+
+## Objective
+
+Learn how to use figures and graphs to
+
+. . .
+
+1.  [Describe a sample]{style="color: blue"}
+
+    -   *"How are individuals distributed w.r.t. height? To age?"*
+
+    -   *"How are individuals distributed between male and female?"*
+
+. . .
+
+2.  [Evaluate the relationship between descriptors]{style="color: blue"}
+
+    -   *"How do height and age seem to be related?"*
+
+    -   *"Does the height distribution look the same for male and female?"*
+
+# Definitions
+
+## Population vs sample
+
+-   [**Population**]{style="color: blue"}: entire group that you want to draw conclusions about (not always people)
+
+-   [**Sample**]{style="color: blue"}: often a smaller, manageable version of a larger group (population of interest)
+
+-   [**Unit/individual**]{style="color: blue"}: observed member of the population of interest
+
+[Why working on samples rather than the entire population of interest?]{style="color: red"}
+
+. . .
+
+-   the population size is too large
+
+-   data collection is costly
+
+-   $\ldots$ time consuming
+
+-   $\ldots$ and sometimes destructive
+
+## Variables
+
+[**Variable**]{style="color: blue"}: a descriptor, *i.e.* one characteristic measured on the sample
+
+. . .
+
+-   [**Quantitative/ numerical variables**]{style="color: blue"}: characteristics that can be counted or measured
+
+    -   **Continuous**: variables that can take an infinite number of real values within a given interval
+
+    -   **Discrete**: variables that can only take a finite number of real values within a given interval
+
+-   [**Qualitative/ categorical variables**]{style="color: blue"}: values corresponding to categories (levels)
+
+    -   **Nominal**: levels without natural order
+
+    -   **Ordinal**: order relation between levels
+
+::: callout-important
+The distinction between categorical and quantitative variables is important because they are analyzed differently.
+:::
+
+## Raw data tables
+
+The values taken by the variables on [$n$]{style="color: red"} individuals are presented in a table :
+
+$$\left[\begin{array}{cccc}
+ x_{1} & y_{1} & \ldots & z_{1} \\
+ x_{2} & y_{2} & \ldots & z_{2} \\
+ \vdots & \vdots & \vdots & \vdots \\
+ x_{n} & y_{n} & \ldots & z_{n}
+\end{array}\right]$$
+
+-   [$n$]{style="color: red"} is the sample size.
+
+-   Each line (resp. column) represents an individual (resp. a variable).
+
+-   The sequence of values taken by a variable on the observed individuals is called a [**statistical series**]{style="color: blue"}. The statistical series for variable $X$ is denoted by $x_1,x_2,\ldots,x_n$.
+
+## Example
+
+[**Data**]{style="color:blue"}
+
+A data subset of **licorice_gargle**, a **R** dataset from a study enrolling adult patients undergoing elective thoracic surgery. <!-- Étude portant sur des patients adultes subissant une chirurgie thoracique élective nécessitant un tube endotrachéal à double lumière. -->
+
+. . .
+
+```{r}
+#| label: load-data-example
+data <- licorice_gargle %>% 
+  mutate(preOp_gender=as.factor(preOp_gender)) %>%
+  mutate(intraOp_surgerySize=as.factor(intraOp_surgerySize)) %>%
+  rename(gender=preOp_gender,BMI=preOp_calcBMI,age=preOp_age,surgerySize=intraOp_surgerySize) %>%
+  select(gender,BMI,age,surgerySize)
+```
+
+```{r}
+#| label: show-data-example
+#| echo: true
+str(data)
+head(data)
+```
+
+[**Questions**]{style="color: blue"}
+
+-   Sample size?
+
+-   Nature of the variables?
+
+# Univariate descriptive statistics
+
+## Examining qualitative variables (1/3)
+
+Example: *surgery size*
+
+[**1-**]{style="color: red"} The statistical series can be summarized into a [**frequency table**]{style="color: blue"} showing **counts within each category**
+
+```{r}
+#| label: desc-surgerysize-frequency-raw
+#| echo: true
+table(data$surgerySize)
+```
+
+or showing **proportions within each category**
+
+```{r}
+#| label: desc-surgerysize-frequency-percentage
+#| echo: true
+prop.table(table(data$surgerySize))
+```
+
+. . .
+
+[**2-**]{style="color: red"} The [**mode**]{style="color: blue"} of the series is the most frequently observed value.
+
+<!-- ```{r} -->
+
+<!-- #| label: create-mode-function  -->
+
+<!-- getmode <- function(v) { -->
+
+<!--   uniqv <- unique(v) -->
+
+<!--   uniqv[which.max(tabulate(match(v, uniqv)))] -->
+
+<!-- } -->
+
+<!-- ``` -->
+
+<!-- ```{r} -->
+
+<!-- #| label: desc-surgerysize-mode -->
+
+<!-- #| echo: true -->
+
+<!-- getmode(data$surgerySize) -->
+
+<!-- ``` -->
+
+. . .
+
+Remark: An observed distribution may have several modes. <!-- ::: callout-important --> <!-- An observed distribution may have several modes. --> <!-- ::: -->
+
+## Examining qualitative variables (2/3)
+
+[**Bar plot**]{style="color: blue"}: height of the bars proportional to the **numbers** or **proportions** in each category of the variable
+
+```{r}
+#| label: desc-surgerysize-barplot
+#| echo: true
+#| fig.asp: 0.2
+ggplot(data, aes(x=surgerySize)) + geom_bar() + xlab("Surgery size")
+
+data.surgery <- data %>% count(surgerySize) %>% 
+  mutate(perc = n / nrow(data)) 
+ggplot(data.surgery, aes(x = surgerySize, y = perc)) + geom_bar(stat = "identity")
+```
+
+## Examining qualitative variables (3/3)
+
+[**Pie chart**]{style="color: blue"}: piece areas are proportional to the **proportions** in each category of the variable
+
+```{r}
+#| label: desc-surgerysize-piechart
+#| echo: true
+ggplot(data.surgery, aes(x = "", y = perc,fill=surgerySize)) +
+geom_bar(stat = "identity",width=1) + coord_polar("y", start=0)
+```
+
+## Examining quantitative variables (1/9)
+
+-   [**Centrality measures**]{style="color: blue"} that tells us about how a typical observation looks like.
+
+-   [**Measures of dispersion**]{style="color: blue"} that tell how observations are spread out around this typical individual.
+
+## Examining quantitative variables (2/9)
+
+The [**mean (arithmetic)**]{style="color: blue"} of a series $\{x_i,i=1,\ldots,n\}$ is defined as: $$
+\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i
+$$
+
+::: callout-caution
+What you need to remember about the mean:
+
+-   each series has only one mean,
+
+-   it is rarely a value from the series,
+
+-   it is susceptible to outliers.
+:::
+
+**Property** :
+
+Define the new series $y$ as: $y=ax+b$.
+
+What is the formula of the arithmetic mean of the series $y$ as a function of $a$, $b$ and $\bar{x}$?
+
+## Examining quantitative variables (3/9)
+
+-   [**Mode**]{style="color: blue"}
+
+-   [**Median**]{style="color: blue"} $x_{1/2}$: {Nb of values $\geq x_{1/2}$} $=$ {Nb of values $\leq x_{1/2}$ }
+
+-   [**Quantile of order** $p$, $x_p$]{style="color: blue"}: value such that a proportion $p$ of the observations is less than $x_p$.
+
+*Example: BMI*
+
+```{r}
+#| label: desc-BMI-statdesc
+#| echo: true
+summary(data$BMI)
+```
+
+*Example: age*
+
+```{r}
+#| label: desc-age-statdesc
+#| echo: true
+summary(data$age)
+```
+
+## Examining quantitative variables (4/9)
+
+[**1-**]{style="color: red"} [**Variance**]{style="color: blue"}: measure of the dispersion of the series around the mean
+
+-   *empirical* variance: $$
+         s_{emp,x}^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x})^2 = \bar{x^2} - (\bar{x})^2
+        $$
+
+-   *corrected* variance: $$
+         s_{corr,x}^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2% =  \frac{1}{n-1} \sum_{i=1}^{n} x_i^2 - \frac{n}{n-1} (\bar{x})^2
+        $$
+
+**Property**:
+
+Define the new series $y$ as: $y=ax+b$.
+
+What is the formula of the variance of the series $y$ as a function of $a$, $b$ and $s^2_{x}$?
+
+[**2-**]{style="color: red"} [**Standard deviation**]{style="color: blue"}: square root of the variance; either $s_{emp,x} = \sqrt{s_{emp,x}^2}$ or $s_{corr,x} = \sqrt{ s_{corr,x}^2}$
+
+## Examining quantitative variables (5/9)
+
+-   [**Coefficient of variation**]{style="color: blue"}: $$
+    CV = \frac{s_x}{\bar{x}}
+    $$Unit?
+
+-   [**Range**]{style="color: blue"}: difference between the largest and the smallest value of the series: $$
+    E = x_{(n)} - x_{(1)}
+    $$ Remark: susceptible to outliers
+
+-   [**Inter-quartile range**]{style="color: blue"}: difference between third and first quartiles of the series: $$
+    E_{IQ} = x_{3/4} - x_{1/4}
+    $$
+
+## Examining quantitative variables (6/9)
+
+*Example: age*
+
+```{r}
+#| label: desc-age-statdesc-2
+#| echo: true
+stat.desc(data$age)
+```
+
+*Example: BMI*
+
+```{r}
+#| label: desc-BMI-statdesc-2
+#| echo: true
+stat.desc(data$BMI)
+```
+
+## Examining quantitative variables (7/9)
+
+Representation of the series distribution via [**histograms**]{style="color: blue"}
+
+```{r}
+ggplot(data, aes(x=age)) + geom_histogram() + xlab("Age")
+```
+
+## Examining quantitative variables (8/9)
+
+or via [**boxplots**]{style="color: blue"}
+
+![Boxplots](./Pictures/Construction_boxplot.png)
+
+## Quantitative variables (9/9)
+
+*Example: age*
+
+```{r}
+ggplot(data, aes(x=age)) + coord_flip() +geom_boxplot()
+```
+
+# Bivariate descriptive statistics
+
+## Between quantitative variables (1/3)
+
+The [**scatter plot**]{style="color: blue"} is used to represent two quantitative variables simultaneously and have an idea of the nature of the relationship between them.
+
+*Example*
+
+```{r}
+ggplot(data, aes(x=age, y=BMI)) + geom_point()
+```
+
+## Between quantitative variables (2/3)
+
+The [**correlation coefficient**]{style="color: blue"} is a measure of **linear** relationship between two quantitative variables.
+
+**Definition** $$
+r = \frac{s_{xy}}{s_x s_y}
+$$ where $s_x$ and $s_y$: standard deviations of $x$ and $y$, and $s_{xy}$: covariance between $x$ and $y$, \textit{i.e.}: $$
+ s_{xy} = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x}) (y_i - \bar{y})
+ $$
+
+. . .
+
+*Example*
+
+```{r}
+#| label: correlation coefficient
+#| echo: true
+cor(data$age,data$BMI)
+```
+
+## Properties and interpretation of the correlation coefficient
+
+-   $-1<r<1$,
+
+-   if $r<0$: negative/decreasing linear relationship,
+
+-   if $r>0$: positive/increasing linear relationship,
+
+-   if $|r|\approx1$: very strong linear relationship,
+
+-   if $r=0$: no **linear** relationship.
+
+## Between qualitative variables
+
+The [**contingency table**]{style="color: blue"} is a table showing the frequencies of one variable in rows and another in columns.
+
+```{r}
+#| label: contingency-table-prep
+levels(data$surgerySize) <- c("Small","Medium","Large")
+levels(data$gender) <- c("Male","Female")
+```
+
+```{r}
+#| label: contingency-table
+#| echo: true
+tab <- table(data$gender,data$surgerySize)
+rownames(tab) <- levels(data$gender)
+colnames(tab) <- levels(data$surgerySize)
+tab
+```
+
+. . .
+
+```{r}
+#| label: contingency-table-2
+#| echo: true
+proportions(tab)
+```
+
+. . .
+
+```{r}
+#| label: contingency-table-3
+#| echo: true
+proportions(tab, margin=1)
+```
+
+. . .
+
+```{r}
+#| label: contingency-table-4
+#| echo: true
+proportions(tab, margin=2)
+```
+
+## Take home message
+
+-   Describing the data at hand is an essential step prior to any statistical study.
+
+-   It provides some data summaries and can be used to highlight patterns in the data.
+
+-   We have seen univariate and bivariate descriptive statistics tools.
+
+-   Different tools are used depending on the nature of the variables.
+
+# Second session: some notions of probability
+
+## Why this probability class?
+
+-   Kind of [toolbox]{style="color: red"} for the rest of the statistics course
+
+    -   Statistical models
+
+    -   Estimators, confidence intervals and tests
+
+-   Introduce essential concepts and definitions (*e.g.* [random variable]{style="color: blue"}, [realization]{style="color: blue"} of a random variable)
+
+-   Introduce the [key probability distributions]{style="color: blue"} (Gaussian, Fisher, Student, Chi-square)
+
+# Preliminary definitions
+
+## Random experiment
+
+-   A [random experiment]{style="color: blue"} is one
+
+    -   in which the result [cannot be (completely) predicted]{style="color: red"} in advance,
+
+    -   if repeated several times [under identical conditions]{style="color: red"}, it can give rise to [different results]{style="color: red"}.
+
+-   Some examples?
+
+. . .
+
+-   Throwing a die
+
+-   Flipping a coin
+
+-   Assessing whether a patient treated with a new drug will recover or not (or will develop side effects or not)
+
+-   Evaluating, at the time of diagnosis of a disease, what will be the evolution of the patient's symptoms
+
+-   ...
+
+## Random variable
+
+-   An abstract way to talk about the outcomes of random experiments
+
+-   Random variable ($X$):
+
+    -   [*process that relates the random experiment to a value*]{style="color: red"}
+
+    -   characteristic that is beeing measured in the random experiment
+
+    -   something whose value cannot be known in advance
+
+-   Examples ...
+
+## Realization of a random variable
+
+-   [Realization]{style="color:red"} (eq. [observation]{style="color: red"}) :
+
+    -   value obtained for the characteristic (random variable) of interest $X$ at the end of a random experiment
+
+    -   what the experimenter actually observes
+
+-   Note that you cannot observe a random variable $X$ itself ...
+
+-   Examples ...
+
+## Domain
+
+-   The [domain]{style="color: red"} of a random variable $X$ is the set of values that $X$ can take after the experiment has been carried out (set of possible values for $X$).
+
+-   The domain of a random variable $X$ is often denoted $D_X$.
+
+-   Examples ...
+
+. . .
+
+-   [Remark:]{style="color: blue"} $D_X$ is different depending on the nature of $X$.
+
+    -   [Qualitative r.v.:]{style="color: blue"} discrete set corresponding to the set of $X$'s possible modalities
+
+    -   [Discrete quantitative r.v.:]{style="color: blue"} (finite or infinite) discrete set of numerical values
+
+    -   [Continuous quantitative r.v.:]{style="color: blue"} open or closed interval (*e.g.* the set of real numbers, the set of positive real numbers, the set of real numbers between 0 and 1).
+
+# Characterizing random variables
+
+## Distribution of a random variable
+
+-   The [(probability) distribution]{style="color: red"} of r.v. $X$ indicates how the values of the different individuals in the population under study are distributed (do some realizations occur more or less often than others? ).
+
+-   It is defined differently depending on whether $X$ is discrete or continuous.
+
+## P.d. of a discrete r.v.
+
+-   For discrete r.v., we can enumerate all of its possible realizations and associate a specific probability with each possible realization.
+
+-   [Definition:]{style="color: blue"} Let $J$ be the size of the domain of definition of $X$, $a_1$, $a_2$, $\ldots$, $a_J$ be the possible values of $X$ and $p_j = P(X = a_j)$, $j = 1,\ldots,J$ be the set of the probabilities associated with the different values in $D_X$. Then, the probability distribution of $X$ is the set [$\{(a_j ; p_j)\}_{j = 1,\ldots,J}$]{style="color: red"}
+
+-   ✏️ Examples
+
+. . .
+
+-   [Properties:]{style="color: blue"}
+
+    1.  $P(X=x) \in [0,1]$ for any $x \in D_X$
+
+    2.  $\sum_{j=1}^{J} p_j = 1$
+
+## P.d. of a continuous r.v.
+
+-   Impossible to list all the possible realizations of a continuous r.v.
+
+-   Impossible to associate a specific probability with each possible realization
+
+    $\Rightarrow$ We need a different concept to characterize the distribution of the r.v.
+
+. . .
+
+The [density function]{style="color:red"} of a continuous r.v. $X$ is the function $f(\cdot)$ that associates a [probability with each range]{style="color:red"} of realizations of $X$.
+
+. . .
+
+-   [Properties:]{style="color:blue"}
+
+    1.  $f(x) \geq 0$ for any $x \in D_X$
+
+    2.  $P(a<X<b) = \int_{a}^b f(x)dx \geq 0$ for any $a, b \in D_X$ s.t. $a<b$
+
+    3.  $\int_{x \in D_X}^{} f(x)dx = 1$
+
+## P.d. of a continuous r.v.
+
+✏️ Graphical examples and different interpretations as area under the curve
+
+## Cumulative distribution function
+
+-   ⚠️ [For quantitative r.v.]{style="color:red"}
+
+-   [Definitions]{style="color:blue"}
+
+    -   The [cumulative distribution function]{style="color: red"} (c.d.f.) of r.v. $X$ is the function $F_X(\cdot)$ defined as $$
+        F_X(x) = P(X \leq x), \; x \in \mathbf{R}
+        $$
+
+    -   The [quantile]{style="color: red"} of order $p$ ($0 \leq p \leq 1$) of a r.v. $X$ is the value $x_p$ s.t. $$
+        P(X \leq x_p) = p,
+        $$ *i.e.*, s.t. $$
+        F_X(x_p) = p.
+        $$
+
+# Cumulative distribution function: properties
+
+(✏️ Graphical illustration of the following properties)
+
+1.  A c.d.f. is defined on $\mathbf{R}$ and has values in $[0; 1]$: it defines a probability !
+
+2.  A distribution function is an increasing function (in the broad sense).
+
+3.  $\lim_x \rightarrow -\infty \; F_X(x) = 0$ and $\lim_x \rightarrow +\infty \; F_X(x) = 1$
+
+4.  $P(a < X < b) = F_X(b) - F_X(a)$
+
+5.  [If the distribution of $X$ is symmetric about $0$]{style="color: red"}: $F_X(-x) = 1-F_X(x)$ for any $x \in \mathbf{R}$
+
+6.  If $X$ is a continuous r.v.: $$
+     f_X(x) = F_X^{' }(x), \; x \in \mathbf{R} 
+     $$
+
+    $$
+     F_X(x) = \int_{-\infty}^{x} f_X(x) dx
+     $$
+
+# Expected value and variance of a quantitative r.v.
+
+## Expected value: definition
+
+-   Central tendency characteristics of a distribution.
+
+-   The [expectated value]{style="color: red"} (or "theoretical" mean) of a r.v. $X$ is the value taken as an average by $X$. It is given by:
+
+    -   if $X$ is a discrete r.v.:
+
+        $$
+         E(X) = \sum_{j=1}^{J} a_j p_j = \sum_{j=1}^{J} a_j P(X=a_j)
+         $$
+
+    -   if $X$ is a continuous r.v.: $$
+         E(X) = \int_{D_X} x f_X(x)dx
+         $$
+
+## Expected value: rules
+
+Let $a \in \mathbf{R}$ be a constant and $X$ ($X_1$, $X_2$) any quantitative r.v.
+
+1.  $E(a) = a$
+
+2.  $E(aX) = aE(X)$
+
+3.  $E(X_1 + X_2) = E(X_1) + E(X_2)$
+
+4.  $E(a+X) = a+E(X)$
+
+**📝 Exercise:** $E(X-E(X)) = ?$
+
+## Variance: definition
+
+-   Quantifies the dispersion of the values taken by a r.v. $X$ its "theoretical mean".
+
+    -   A large variance indicates an important dispersion.
+
+    -   A zero variance reveals that $X$ is non random.
+
+. . .
+
+[Definition]{style="color:red"}
+
+$$
+V(X) =E\left[ (X-E(X))^2 \right] = E(X^2) - E(X)^2
+$$
+
+. . .
+
+Calculation
+
+-   if $X$ is a discrete r.v. : $V(X) = \sum_{j=1}^{J} (a_j-\mu)^2 p_j$
+
+-   if $X$ is a continuous r.v. : $V(X) = \int_{D_X}^{} (x-\mu)^2 f_X(x) dx$
+
+where $\mu=E(X)$.
+
+## Variance: rules
+
+Let $a \in \mathbf{R}$ be a constant and $X$ ($X_1$, $X_2$) any quantitative r.v.
+
+1.  $V(a) = 0$
+
+2.  $V(aX) = a^2 V(X)$
+
+3.  $V(a+X) = V(X)$
+
+4.  $V(X_1+X_2)= \ldots$ (It depends!)
+
+## Remarks
+
+-   The [standard deviation]{style="\"color:red"} of a (quantitative) r.v. $X$ is the square-root of its variance ($\sqrt{V(X)}$).
+
+-   📝 Exercise (centering and standardizing) : Let $X$ be a r.v. with mean $\mu$ and variance $\sigma^2$ and define the transformed variable $$Y = \frac{X-\mu}{\sigma}$$ What are the expected value and the variance of $Y$?
+
+
+# Some common distributions
+
+## Bernoulli distribution
+
+To describe an experiment whose result can take only two values, called by convention, success or failure.
+
+*Ex.: a candidate passes or fails an examination, whether a sick patient is cured or not,* $\ldots$
+    
+[$$X \sim \mathcal{B}(p), \, 0 \leq p \leq 1$$]{style="color:red"}
+
+
+::: columns
+::: {.column width="50%"}
+-   Domain: $D_X = \{0,1\}$
+
+-   Probability distribution: $P(X=0)=1-p$ , $P(X=1)=p$
+:::
+::: {.column width="50%"}
+-   Expectation: $E(X)=p$
+
+-   Variance: $V(X)=p(1-p)$
+:::
+:::
+
+## Binomial distribution
+
+To describe an experiment which consists in counting the number of successes after performing [$n$ independent Bernoulli trials with the same probability $p$]{style="color:red"}.
+
+[$$X \sim \mathcal{B}(n,p), \, n \in \mathbf{N}, \, 0 \leq p \leq 1$$]{style="color:red"}
+
+
+
+::: columns
+::: {.column width="50%"}
+-   Domain: $D_X = \{0,1,\ldots,n\}$
+
+-   Probability distribution: $P(X=k)=\frac{k!}{n! (n-k)!}p^k(1-p)^{n-k}$
+:::
+::: {.column width="50%"}
+-   Expectation: $E(X)=n p$
+
+-   Variance: $V(X)=n p(1-p)$
+:::
+:::
+
+
+::: {#fig-binom layout-ncol="3"}
+
+![B(10,0.2)](./Pictures/binom_n10_p02.png){height="200" width="200" #fig-B1 fig-align="center"}
+
+![B(10,0.5)](./Pictures/binom_n10_p05.png){height="200" width="200" #fig-B2 fig-align="center"}
+
+![B(20,0.2)](./Pictures/binom_n20_p02.png){height="200" width="200" #fig-B3 fig-align="center"}
+
+Binomial distributions
+:::
+
+
+## Poisson distribution
+
+To describe counts.
+
+[$$X \sim \mathcal{P}(\lambda), \lambda >0$$]{style="color:red"}
+
+::: columns
+::: {.column width="50%"}
+-   Domain: $D_X = \mathbf{N} = \{0,1,\ldots\}$
+
+-   Probability distribution: $P(X=k)=e^{-\lambda} \frac{\lambda^k}{k!}$
+:::
+::: {.column width="50%"}
+-   Expected value: $E(X)=\lambda$
+
+-   Variance: $V(X)=\lambda$
+:::
+:::
+
+
+::: {#fig-pois layout-ncol="3"}
+
+![P(1.5)](./Pictures/pois_l1_5.png){height="200" width="200" #fig-P1 fig-align="center"}
+
+![P(10)](./Pictures/pois_l_10.png){height="200" width="200" #fig-P2 fig-align="center"}
+
+![P(50)](./Pictures/pois_l_50.png){height="200" width="200" #fig-P3 fig-align="center"}
+
+Poisson distributions
+:::
+
+
+## Gaussian distribution
+
+[$$X\sim \mathcal{N}(\mu,\sigma^2)$$]{style="color:red"}
+
+::: columns
+::: {.column width="50%"}
+-   Domain: $D_X = \mathbf{R}$
+
+-   Density function: $f_X(x) = (2\pi \sigma^2)^{-1/2} \exp\left(-\frac{1}{2\sigma^2 }(x-\mu)^2\right)$
+:::
+
+::: {.column width="50%"}
+-   Expected value: $E(X)=\mu$
+
+-   Variance: $V(X)=\sigma^2$
+:::
+:::
+
+::: {#fig-gaussian layout-ncol="3"}
+![N(0,1)](./Pictures/norm_0_1_bis.png){height="200" width="200" #fig-G1 fig-align="center"}
+
+![N(0,10)](./Pictures/norm_0_10_bis.png){height="200" width="200" #fig-G2 fig-align="center"}
+
+![N(-100,1)](./Pictures/norm_100_1_bis.png){height="200" width="200" #fig-G3 fig-align="center"}
+
+Gaussian densities, *dotted curve:* $\mathcal{N}(0,1)$
+:::
+
+
+
+# Joint distributions
+
+## Independent random variables
+
+**Idea:** (⚠️ not a rigorous definition)
+
+Two random variables $X_1$ and $X_2$ are [independent]{style="color:red"} when knowing the value taken by $X_1$ gives no information about the value that will be taken by $X_2$ and vice versa.
+
+**Examples** $\ldots$
+
+
+## Covariance
+
+-   Measures the strength of the relationship between two (quantitative) variables.
+
+-   Consider two r.v. $X_1$ and $X_2$. The [covariance]{style="color:red"} between $X_1$ and $X_2$ is defined by: $$
+    cov(X_1,X_2) = E[(X_1-E(X_1))(X_2-E(X_2))] = E(X_1 X_2)- E(X_1)E(X_2)
+    $$
+
+. . .
+
+**Rules**
+
+1.  If two r.v. are independent, then their covariance is zero. But the converse is false!
+
+2.  $cov(X,X) = V(X)$
+
+3.  $cov(aX+bY,cZ+dT) = ac cov(X,Z) + ad cov(X,T) + bc cov(Y,Z) + bd cov(Y,T)$
+
+4.  $V(X_1 + X_2) = V(X_1) + V(X_2) + 2cov(X_1,X_2)$
+
+Consequence: if $X_1$ and $X_2$ are independent, then $V(X_1 + X_2) = V(X_1) + V(X_2)$
+
+## Linear correlation coefficient
+
+Consider two (quantitative) r.v. $X_1$ and $X_2$.
+
+The [linear correlation coefficient]{style="color:red"} between $X_1$ and $X_2$ is denoted by: $$
+    \rho(X_1, X_2) = \frac{cov(X_1, X_2)}{\sqrt{V(X_1)}\sqrt{V(X_2)}}
+    $$
+
+. . .
+
+Remarks :
+
+-   $-1 \leq \rho(X_1, X_2) \leq 1$.
+
+-   $\rho(X_1, X_2)$ only characterizes the [linear]{style="color:red"} relationship between $X_1$ and $X_2$.
+
+✏️ Graphical considerations $\ldots$
+
+
+## Joint distributions
+
+**Discrete r.v.**
+
+[Joint distribution:]{style="color:blue"} set of values $p_{ij}$ defined as:
+$$p_{ij} = P(X=x_i, Y=y_j)$$
+*Remark*: $\sum_{i,j} p_{ij} = 1$
+
+
+If $X$ and $Y$ are [independent]{style="color:blue"}, then $$P(X=x_i  \cap Y=y_j) = P(X=x_i) P(Y=y_j)$$
+
+.  .  .
+
+**Continuous r.v.**
+
+If $X$ and $Y$ are [independent]{style="color:blue"}, then $$f(x,y) = h(x) g(y)$$
+
+
+## Central limit theorem
+
+Suppose $X_{1},\ldots ,X_{n}$ is a sequence of [i.i.d.]{style="color:red"} random variables with  $\mathbb{E}[X_{i}]=\mu$ and $V[X_{i}]=\sigma ^{2}<\infty$. Then as $n$ approaches infinity, the random variables $\sqrt {n}({\bar {X}}_{n}-\mu )$ converge in distribution to a normal $\mathcal {N}(0,\sigma ^{2})$:
+[$${{\sqrt {n}}\left({\bar {X}}_{n}-\mu \right)\ \xrightarrow {d} \ {\mathcal {N}}\left(0,\sigma ^{2}\right).}$$]{style="color:red"}
+
+
+
+
+# Statistical inference
+
+## Outline
+
+The goal is to introduce tools to draw conclusions about a population from observations collected on a subset of individuals in that population (sample)^[Image from https://commons.wikimedia.org/wiki/File:01fig-inference.png?uselang=fr].
+
+::: columns
+::: {.column width="50%"}
+![](./Pictures/inference.png){fig-align="center" height="250" width="300"}
+:::
+
+::: {.column width="50%"}
+1.  [Estimation.]{style="color:red"}
+
+2.  [Confidence intervals.]{style="color:red"}
+
+3.  [Statistical tests.]{style="color:red"}
+:::
+:::
+
+This requires the definition of a [model]{style="color:red"}, i.e. the specification of a random distribution for the data, and possibly an equation linking the [parameters of the distribution]{style="color:red"}[^1] of the variable to be explained to the explanatory variables.
+
+[^1]: [The model parameters are the quantities to be estimated and tested.]{style="color:red"}
+
+## Examples
+
+▶️ **We are interested in estimating the proportion of patients experiencing side effects after taking a new medication.**
+
+. . .
+
+*Denote by* $X$ the number of patients among those of a $n$-sample that experience a side effect. We can assume that $$X \sim \mathcal{B}(n,p)$$
+
+. . .
+
+[$p$ is unknown and represents the probability to experience a side effect]{style="color:red"}. *The* $n$-sample is used to draw conclusions about $p$.
+
+. . .
+
+▶️ **We are interested in estimating the average cholesterol level in the population of people suffering from a given disease.**
+
+. . .
+
+*Denote by* $(X_i)_{1 \leq i \leq n}$ the cholesterol levels for each individual in a $n$-sample.
+
+*It can be assumed that* $(X_i)_{1 \leq i \leq n}$ are mutually independant such that:
+
+$$X_i \sim \mathcal{N}(\mu,\sigma^2)$$
+
+$\mu$ and $\sigma^2$ are unknown. [$\mu$ represents the average cholesterol level in the population of interest.]{style="color:red"}. The $n$-sample is used to draw conclusions about $\mu$.
+
+
+
+## Prerequisites
+
+**Gaussian variables manipulation**
+
+-   [Scaling]{style="color:blue"} : Consider $X \sim \mathcal{N}(\mu,\sigma^2)$ and define $Z=\frac{X-\mu}{\sigma}$. Then, $$Z \sim \mathcal{N}(0,1)$$
+
+-   [Sum of independent gaussian r.v.'s]{style="color:blue"} : Consider $X_i \sim \mathcal{N}(\mu_i,\sigma_i^2)$, $i=1,\ldots,n$ **independent** and define $Z=\sum_{i} X_i$. Then, $$Z \sim \mathcal{N}(\sum_{i}\mu_i,\sum_{i}\sigma_i^2)$$
+
+
+## Estimator, estimation
+
+<!-- - An **estimation** is a value calculated on a sample and which we hope is a good approximation of the value we would have calculated on the total population. It is derived from an estimator.  -->
+
+-   An **estimator** $T_n$ of a parameter is a random variable defined as a function of the random variables from the statistical model, *i.e.* $$T_n = f(X_1,\ldots,X_n)$$ An estimator is a random variable and is therefore characterized by a probability distribution.
+
+-   The **estimation** is a realization of the random variable $T_n$ calculated from the observations in the sample: $$t_n = f(x_1,\ldots,x_n)$$
+
+## A simple example
+
+Let's consider a Gaussian model, *ie* $X_i \underset{i.i.d.}{\sim} \mathcal{N}(\mu,\sigma^2)$[^2] and $$\bar{X_n}=\dfrac{1}{n}\sum\limits_{i=1}^{n} X_i$$
+
+[^2]: Think, for example, of the model for cholesterol levels in the previous slide.
+
+1.  Is $\bar{X_n}$ a random variable or a constant?
+
+2.  What are the distribution, the expected value and the variance of $\bar{X_n}$?
+
+3.  Why would $\bar{X_n}$ be a good estimator for $\mu$?
+
+**Desired properties of an estimator: unbiased, small variance,...**
+
+## How are estimators defined in practice?
+
+-   The [maximum likelihood estimation (MLE)]{style="color:red"} method can be used to estimate the parameters of a model[^3].
+
+-   The idea is to find the value of the unknown parameter(s) that maximize the probability (*i.e.* the likelihood) of the data being observed (given the model).
+
+[^3]: Many other estimation methods exist, such as the least squares method for example.
+
+📝 *Example:* Derivation of $\bar{X_n}$ as the maximum likelihood estimator of $\mu$ in the Gaussian model.
+
+## Confidence intervals
+
+-   An estimation is not the true parameter value! We can only hope that the estimated value is close to the true parameter value.
+
+-   Due to sampling variability, the estimation of a given parameter varies from sample to sample.
+
+-   A **confidence interval** is a range of values that contains the true parameter value with a given probability $1-\alpha$. $1-\alpha$ is called the confidence level.
+
+## Building confidence intervals
+
+These items describe the generic steps in the construction of a confidence interval. We explain them here in the Gaussian model.
+
+1.  Transform the estimator into a **pivotal statistics** $T_n$ whose distribution does not depend on the unknown parameters (*i.e.* is entirely known). Think about centering and standardizing $\bar{X}_n$.
+
+2.  Represent the distribution of $T_n$ and place the quantiles of orders $\alpha/2$ and $1-\alpha/2$ ($u_{\alpha/2}$ and $u_{1-\alpha/2}$) on this representation.
+
+3.  What is the value of $P(u_{\alpha/2} \leq T_n \leq u_{1-\alpha/2})$?
+
+4.  Deduce $A_n$ and $B_n$ such that $P(A_n \leq \mu \leq B_n)$.
+
+$[A_n,B_n]$ is called **probability interval**. The **confidence interval** is the realization of this probability interval calculated from the sample.
+
+<!-- ## Back to the example -->
+
+<!-- Assume the value of $\sigma$ is known and that $\sigma=83$. -->
+
+<!-- Derive a confidence interval at confidence level $95\%$ of the average cholesterol level in the population. -->
+
+<!-- ```{r comparesummary1ter} -->
+
+<!-- summary(data$cholesterol) -->
+
+<!-- ``` -->
+
+<!-- You can use the values below -->
+
+<!-- ```{r normquantiles,echo=T} -->
+
+<!-- qnorm(0.025) -->
+
+<!-- qnorm(0.05) -->
+
+<!-- ``` -->
+
+## What if $\sigma^2$ is not known?
+
+
+## Important probability distributions and results
+
+[Chi-square distribution]{style="color:blue"} : Let $X_1$, $X_2$, ..., $X_n$ be $n$ independent r.v. and identically distributed according $\mathcal{N}(0,1)$, and let [$U = X_1^2 +X_2^2 +...+X_n^2$]{style="color:red"}.
+
+::: columns
+::: {.column width="50%"}
+Then [$$U \sim \chi^2(n)$$]{style="color:red"}
+:::
+
+::: {.column width="50%"}
+![$\chi^2(10)$](./Pictures/chisq_n10.png){#fig-chi height="200" width="200" fig-align="left"}
+:::
+:::
+
+[Important property]{style="color:blue"} : Let $X_1$, $X_2$, \ldots, $X_n$ be $n$ independent r.v. and identically distributed according $\mathcal{N}(\mu,\sigma^2)$. Then [$$\frac{1}{\sigma^2}\sum_{i=1}^{n} (X_i - \bar{X}_n)^2 \sim \chi^2(n-1)$$]{style="color:red"} 
+
+## Important probability distributions and results
+
+[Student distribution]{style="color:blue"} : Let $X \sim \mathcal{N}(0,1)$ and $U \sim \chi^2(\nu)$ independent, and let [$T = X/\sqrt{(U/\nu)}$]{style="color:red"}. Then [$$T \sim \mathcal{T}(\nu)$$]{style="color:red"}
+
+
+
+
+
+
+
+[Fisher distribution]{style="color:blue"} : Let $U_1$ and $U_2$ be independent r.v. s.t. $U_1 \sim \chi^2(\nu_1)$ and $U_2 \sim \chi^2(\nu_2)$ , and let [$F = (U_1/\nu_1)/(U_2/\nu_2)$]{style="color:red"}. Then [$$F \sim \mathcal{F}(\nu_1,\nu_2)$$]{style="color:red"}
+
+
+
+::: {#fig-student-fisher layout-ncol="3"}
+![$\mathcal{T}(1)$](./Pictures/student1.png){#fig-st1 height="200" width="200" fig.align="left"}
+
+![$\mathcal{T}(10)$](./Pictures/student10.png){#fig-st10 height="200" width="200" fig.align="left"}
+
+![$\mathcal{F}(3,10)$](./Pictures/fisher_5_30.png){#fig-fisher height="200" width="200" fig.align="\"left"}
+
+*dotted curve:* $\mathcal{N}(0,1)$
+:::
+
+
+## What if $\sigma^2$ is not known?
+
+Consider $X_i \underset{i.i.d.}{\sim} \mathcal{N}(\mu,\sigma^2)$. The usual estimator for $\sigma^2$ is [$$S_{n-1}^2 = \frac{1}{n-1} \sum_{i=1}^{n} (X_i - \bar{X_n})^2$$]{style="color:red"} It is unbiased and follows a chi-square distribution: [$$\frac{n-1}{\sigma^2} S_{n-1}^2 \sim \chi^2_{n-1}$$]{style="color:red"}
+
+## What if $\sigma^2$ is not known?
+
+Instead of using $T_n = \frac{\bar{X_n}-\mu}{\sigma/\sqrt{n}}$, we use $$T_n^{(2)} = \frac{\bar{X_n}-\mu}{S_{n-1}/\sqrt{n}} \sim \mathcal{T}_{n-1}$$ as a pivotal statistics.
+
+1.  Justify that $T_n^{(2)}$ is a pivotal statistics.
+
+2.  Repeat the steps detailed above to derive the confidence interval of $\mu$ at confidence level $1-\alpha$.
+
+## Synthetic example
+
+```{r data1,echo=FALSE}
+data <- data.frame(
+  id = 1:10,
+  gender = c(0,1,0,1,0,1,0,1,0,1),
+  cholesterol = c(254, 402, 288, 354, 220, 451, 405, 280, 358, 456),
+  weight_kg = c(48, 98, 72, 57, 79, 63, 84, 30, 76, 65),
+  height_cm = c(158, 145, 152, 148, 160, 165, 138, 142, 173, 169)
+)
+```
+
+```{r data1confin, echo=T}
+data
+m <- mean(data$cholesterol)
+s <- sd(data$cholesterol)
+c(m-s/sqrt(10)*qt(0.975,9),m+s/sqrt(10)*qt(0.975,9))
+t.test(data$cholesterol,conf.level=0.95)
+```
+
+## Statistical tests
+
+-   [Statistical hypothesis]{style="color:blue"}: any statement concerning a characteristic of the population (*ie* a parameter of the model),
+
+-   [Null hypothesis ($H_0$)]{style="color:blue"}: the hypothesis according to which the value of the parameter of interest is equal to a reference value.
+
+-   [Alternative hypothesis ($H_1$)]{style="color:blue"}: must reflect an incompatibility with $H_0$, for example, its opposite.
+
+    -   two-sided test: $H_0$: $\mu = \mu_0$ vs $H_1$: $\mu \neq \mu_0$
+
+    -   one-sided test: $H_0$: $\mu = \mu_0$ vs $H_1$: $\mu > \mu_0$
+
+    -   one-sided test : $H_0$: $\mu = \mu_0$ vs $H_1$: $\mu < \mu_0$
+
+**The approach of statistical testing consists in choosing between** $H_0$ and $H_1$ the most probable hypothesis in view of the observations contained in the sample.
+
+*✏️ Example.* We wonder if the average cholesterol level of people with this disease is equal to the reference value of 400. How would you formulate $H_0$ and $H_1$?
+
+## Test statistic
+
+✏️ Still consider $X_i \underset{i.i.d.}{\sim} \mathcal{N}(\mu,\sigma^2)$ and the following hypothesis: $$
+H_0 : \mu = \mu_0 \; vs \; H_1 : \mu \neq \mu_0
+$$
+
+1.  Recall the expression for the mean estimator.
+
+2.  What would be its distribution if $H_0$ were true?
+
+3.  Consider $$T_n^{(2)} = \sqrt{n} \frac{\bar{X_n}-\mu_0}{S_{n-1}}.$$ What would be the distribution of $T_n^{(2)}$ if $H_0$ were true? What are the specificities of this distribution
+
+➡️ $T_n^{(2)}$ is the **test statistic**. The construction of the decision rule that will allow to choose between $H_0$ and $H_1$ given the data is based on this random variable (rejection area, critical value, p-value).
+
+## Decision rule
+
+-   When performing a statistical test, **it is always assumed** that $H_0$ is true.
+
+-   Then, a **significance level** $\alpha$ is chosen. It represents the proportion of the tests statistic's values that would be the least compatible with $H_0$ and that would lead to the decision to reject $H_0$.
+
+✏️ Exercise:
+
+1.  Plot the distribution of $T_n^{(2)}$ under $H_0$ and represent $\alpha$ and the rejection zone.
+
+2.  What critical values delimit the rejection zone?
+
+3.  State the decision rule of the test.
+
+
+## Back to the example
+
+```{r test, echo=T}
+t.test(data$cholesterol, mu=400, alternative="two.sided")
+```
+
+**Discussion**
+
+- p-value concept
+
+- What would have changed if other alternative hypothesis had been considered? 
+
+. . .
+
+```{r testbis, echo=T}
+t.test(data$cholesterol, mu=400, alternative="greater")
+```
+
+## Errors and power of a test
+
+-   type 1 error: 
+
+-   type 2 error: 
+
+-   power: 
+
+<!-- ## P-value -->
+
+<!-- Let $t_n$ be the value of the test statistic $T_n$ obtained from the observations. The **p-value** is the probability under $H_0$ that $T_n$ takes values beyond a threshold that would be given by $t_n$. This quantity quantifies the risk we take in rejecting $H_0$ with the observed data. To control the risk, the decision rule will consist in rejecting $H_0$ if the value of the p-value is lower than $\alpha$. -->
