@@ -1652,8 +1652,513 @@ mean of x
 <li><p>type 2 error:</p></li>
 <li><p>power:</p></li>
 </ul>
-<!-- ## P-value -->
-<!-- Let $t_n$ be the value of the test statistic $T_n$ obtained from the observations. The **p-value** is the probability under $H_0$ that $T_n$ takes values beyond a threshold that would be given by $t_n$. This quantity quantifies the risk we take in rejecting $H_0$ with the observed data. To control the risk, the decision rule will consist in rejecting $H_0$ if the value of the p-value is lower than $\alpha$. -->
+</section></section>
+<section>
+<section id="principal-component-analysis-and-data-clustering" class="title-slide slide level1 center">
+<h1>Principal Component Analysis and data clustering</h1>
+
+</section>
+<section id="principal-component-analysis-pca" class="slide level2">
+<h2>Principal Component Analysis (PCA)</h2>
+<p><span style="color:red">P</span>rincipal <span style="color:red">C</span>omponent <span style="color:red">A</span>nalysis : multidimensional exploratory analysis method</p>
+<h4 id="objectives"><span style="color:black">Objectives</span></h4>
+<ul>
+<li><p><span style="color:blue">Represent</span> the observation of <span class="math inline">\(p\)</span> variables (<span class="math inline">\(p&gt;3\)</span>) in a space of <span style="color:blue">reduced dimension</span> (typically in a plane or a 3-dimensional space) by <span style="color:blue">limiting the loss of information</span>,</p></li>
+<li><p><span style="color:blue">Summarize</span> the information in a synthetic way: how to keep the essential information of the data?</p></li>
+</ul>
+<h4 id="tools"><span style="color:black">Tools</span></h4>
+<ul>
+<li><p>No prior statistical assumption</p></li>
+<li><p>Matrix calculation, vectors and eigenvalues</p></li>
+</ul>
+<h4 id="data"><span style="color:black">Data</span></h4>
+<p><span style="color:red">PCA can only be applied to quantitative variables observed on the same individuals.</span></p>
+</section>
+<section id="example-1" class="slide level2">
+<h2>Example</h2>
+<p>Cheese is made from cow’s, goat’s or sheep’s milk. It is a source of protein, calcium, but also vitamin A (retinol) and vitamin B9 (folic acid). The objective of this study is to specify the nutritional value of the most common cheeses.</p>
+<ol type="1">
+<li><p>Which cheeses have the same nutritional profile, and which ones have different profiles? Can we highlight the main dimensions of nutritional variability of this set of cheeses?</p></li>
+<li><p>Associate similar cheeses with a particular nutritional profile.</p></li>
+</ol>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   29 obs. of  10 variables:
+ $ Fromages   : chr  "CarredelEst" "Babybel" "Beaufort" "Bleu" ...
+ $ calories   : int  314 314 401 342 264 367 344 292 406 399 ...
+ $ sodium     : num  354 238 112 336 314 ...
+ $ calcium    : num  72.6 209.8 259.4 211.1 215.9 ...
+ $ lipides    : num  26.3 25.1 33.3 28.9 19.5 28.8 27.9 25.4 32.5 32.4 ...
+ $ retinol    : num  51.6 63.7 54.9 37.1 103 ...
+ $ folates    : num  30.3 6.4 1.2 27.5 36.4 5.7 36.3 32.5 4.9 1.3 ...
+ $ proteines  : num  21 22.6 26.6 20.2 23.4 23 19.5 17.8 26 29.2 ...
+ $ cholesterol: int  70 70 120 90 60 90 80 70 110 120 ...
+ $ magnesium  : int  20 27 41 27 20 30 36 25 28 51 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="notations" class="slide level2">
+<h2>Notations</h2>
+<h4 id="data-1"><span style="color:black">Data</span></h4>
+<p>The values taken by the <span style="color:blue"><span class="math inline">\(p\)</span> variables</span> on <span style="color:blue"><span class="math inline">\(n\)</span> individuals</span> are presented in a <span class="math inline">\(n\times p\)</span> table <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[X=\left[\begin{array}{cccc}
+x_{11} &amp; x_{12} &amp; \ldots &amp; x_{1p} \\
+x_{21} &amp; x_{22} &amp; \ldots &amp; x_{2p} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+x_{n1} &amp; x_{n2} &amp; \ldots &amp; x_{np}
+\end{array}\right]\]</span></p>
+<ul>
+<li><p><span class="math inline">\(x_{ij}\)</span> is the value taken by individual <span class="math inline">\(i\)</span> for the variable <span class="math inline">\(j\)</span>.</p></li>
+<li><p>The line <span style="color:blue"><span class="math inline">\(x_{i\cdot}=(x_{i1} , x_{i2} , \ldots , x_{ip})\)</span></span> corresponds to the values of <span class="math inline">\(p\)</span> variables for individual <span class="math inline">\(i\)</span>.</p></li>
+<li><p>The column <span style="color:blue"><span class="math inline">\(x_{\cdot j}=(x_{1j},x_{2j},\ldots,x_{nj})\)</span></span> corresponds to the values of the variable <span class="math inline">\(j\)</span> on the <span class="math inline">\(n\)</span> individuals.</p></li>
+</ul>
+<h4 id="mean-and-variance"><span style="color:black">Mean and variance</span></h4>
+<ul>
+<li><p>Mean of variable <span class="math inline">\(j\)</span> : <span class="math inline">\(\bar{x}_{\cdot j} = \frac{1}{n} \sum\limits_{i=1}^{n} x_{ij}\)</span></p></li>
+<li><p>Variance of variable <span class="math inline">\(j\)</span> : <span class="math inline">\(\sigma^2_{j} = \frac{1}{n} \sum\limits_{i=1}^{n} (x_{ij}-\bar{x}_{\cdot j})^2\)</span></p></li>
+</ul>
+</section>
+<section id="preliminary-data-transformations" class="slide level2">
+<h2>Preliminary data transformations</h2>
+<div class="fragment" data-fragment-index="1">
+<!-- -->
+<h4 id="data-transformations"><span style="color:black">Data transformations:</span></h4>
+<ul>
+<li><p>Centering data: <span class="math inline">\(\tilde{X} = (x_{ij}-\bar{x}_{\cdot j})_{1\leq i \leq n , 1\leq j \leq p}\)</span></p></li>
+<li><p>Centering and standardizing data: <span class="math inline">\(\tilde{X} = \left(\frac{x_{ij}-\bar{x}_{\cdot j}}{\sigma_j}\right)_{1\leq i \leq n , 1\leq j \leq p}\)</span></p></li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="2">
+<!-- -->
+<h4 id="why-standardizing"><span style="color:black">Why standardizing ?</span></h4>
+<ul>
+<li><p>The variables are of different natures; for example: age, salary, number of children</p></li>
+<li><p>it is felt that <span style="color:blue">their respective influences</span> in the analysis <span style="color:blue">should not depend on their variability</span>; for example in the analysis of grades: should a subject with a high variance have a greater influence in the analysis?</p></li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="3">
+<p><strong>Example: Should the data be standardized?</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="fu">apply</span>(fromages[,<span class="sc">-</span><span class="dv">1</span>],<span class="dv">2</span>,mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   calories      sodium     calcium     lipides     retinol     folates 
+  300.03448   210.08621   185.73448    24.15862    67.56207    13.01034 
+  proteines cholesterol   magnesium 
+   20.16897    74.58621    26.96552 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="fu">apply</span>(fromages[,<span class="sc">-</span><span class="dv">1</span>],<span class="dv">2</span>,sd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   calories      sodium     calcium     lipides     retinol     folates 
+  91.914356  108.678923   72.528882    8.129642   24.163098   11.723339 
+  proteines cholesterol   magnesium 
+   6.959788   28.245755   11.318388 </code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="pcas-goals" class="slide level2">
+<h2>PCA’s goals</h2>
+<div class="fragment" data-fragment-index="1">
+<ul>
+<li><p>Extracting the essential information from a table <span class="math inline">\(X\)</span> by providing the user with <span style="color:blue">interpretation-friendly graphical representations</span>.</p></li>
+<li><p>Data compression/summary of large datasets</p></li>
+<li><p>Two main aspects :</p>
+<ol type="1">
+<li><p>an analysis of the <span style="color:blue">similarities between individuals</span> <span class="math inline">\(\rightarrow\)</span> characterization of the individuals with the available variables</p></li>
+<li><p>an analysis of the <span style="color:blue">relationships between variables</span></p></li>
+</ol></li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="2," style="text-align:center">
+<p><span style="color:red">In what follows, PCA is presented on centered and standardized data tables.</span></p>
+</div>
+</section>
+<section id="the-space-the-cloud-of-individuals" class="slide level2">
+<h2>The space (the cloud) of individuals</h2>
+<p>Geometrically, the individuals in <span class="math inline">\(X\)</span> correspond to <span class="math inline">\(n\)</span> points of <span class="math inline">\(\mathbf{R}^p\)</span>.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><p><span style="color:blue">Similarity between individuals</span>: euclidian distance <span class="math display">\[
+d_{ind}(i_1,i_2) = \sqrt{\sum_{j=1}^{p} (x_{i_1j}-x_{i_2j})^2} = \mid\mid x_{i_1 \cdot} - x_{i_2 \cdot} \mid\mid_p
+\]</span></p></li>
+<li><p><span style="color:blue">Inertia</span> <span class="math inline">\(\rightarrow\)</span> variability between individuals <span class="math display">\[
+\begin{eqnarray*}
+I_{ind} &amp; = &amp; \frac{1}{n} \sum_{j=1}^{p}\sum_{i=1}^{n} (x_{ij}-\bar{x}_{\cdot j})^2\\
+&amp; = &amp; \frac{1}{n} \sum_{i=1}^{n} \mid \mid x_{i\cdot} - g\mid \mid ^2\\
+&amp; = &amp; \sum_{j=1}^{p} \sigma^2_{j}
+\end{eqnarray*}
+\]</span></p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><p><span style="color:blue">Center of gravity of the cloud</span>: <span class="math display">\[
+g = (\bar{x}_{\cdot 1},\ldots,\bar{x}_{\cdot p})
+\]</span></p></li>
+<li><p>The variance of the <span class="math inline">\(j\)</span>-th variable is given by <span class="math display">\[\sigma^2_{j} = \frac{1}{n} \sum\limits_{i=1}^{n} (x_{ij}-\bar{x}_{\cdot j})^2\]</span></p></li>
+<li><p><strong>Standardized case:</strong> <span class="math inline">\(I_{ind} = p\)</span></p></li>
+<li><p><strong>Remark:</strong> influence of each variable different in the non standardized case</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="the-space-the-cloud-of-variables" class="slide level2">
+<h2>The space (the cloud) of variables</h2>
+<p>Geometrically, the quantitative variables in the data table <span class="math inline">\(X\)</span> correspond to <span class="math inline">\(p\)</span> points of <span class="math inline">\(\mathbf{R}^n\)</span>.</p>
+<ul>
+<li><p><span style="color:blue">Distance between variables</span>: scalar product <span class="math display">\[
+&lt; x_{\cdot j_1}, x_{\cdot j_2} &gt; = \frac{1}{n} \sum_{i=1}^{n}   x_{i j_1} x_{i j_2}
+\]</span> <span class="math inline">\(\hookrightarrow\)</span> Expresses the <span style="color:blue">correlation</span> between the two variables (reduced case). Also a cosine.</p></li>
+<li><p>The <span style="color:blue">distance</span> between two variables is given by the norm associated with this scalar product <span class="math display">\[
+d_{var}(j_1,j_2) = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (x_{ij_1}-x_{ij_2})^2} = \mid\mid x_{\cdot j_1} - x_{\cdot j_2 } \mid\mid_n
+\]</span></p></li>
+<li><p><span style="color:blue">Inertia (variability) between variables</span> <span class="math display">\[
+I_{var} = \sum_{j=1}^{p} \mid\mid x_{\cdot j}\mid\mid_n^2
+\]</span></p></li>
+<li><p>Remark : <span class="math display">\[
+I_{var} = I_{ind} (= p)
+\]</span></p></li>
+</ul>
+</section>
+<section id="principal-components-and-dimension-reduction" class="slide level2">
+<h2>Principal components and dimension reduction</h2>
+<div class="fragment" data-fragment-index="1">
+<ul>
+<li><p>If <span class="math inline">\(p &gt; 3\)</span>, the individuals’ cloud in <span class="math inline">\(\mathbf{R}^p\)</span> is not representable.</p></li>
+<li><p>The PCA method produces an <span style="color:blue">approximate representation</span> in a low dimensional space (usually 2 or 3) by constructing from the <span class="math inline">\(p\)</span> (correlated) variables <span class="math inline">\(q&lt;p\)</span> new variables called <span style="color:blue">principal components</span></p></li>
+</ul>
+<p><span class="math inline">\(\Rightarrow\)</span> in this new reduced space, the cloud is more easily represented and the analysis is easier.</p>
+</div>
+<div class="fragment" data-fragment-index="2">
+<ul>
+<li><p>The principal components (<span class="math inline">\(p\)</span> in total) are constructed by matrix algebra operations such that</p>
+<ul>
+<li><p>Each principal component is <span style="color:blue">linear combination of <span class="math inline">\(p\)</span> initial variables</span></p></li>
+<li><p>The principal components are <span style="color:blue">orthogonal</span> to each other (<em>i.e.</em> uncorrelated)</p></li>
+<li><p>Each principal component carries a certain proportion of the total inertia <span class="math inline">\(\rightarrow\)</span> minimize the loss of information</p></li>
+<li><p>If <span class="math inline">\(I_k\)</span> is the inertia carried by <span class="math inline">\(k\)</span>th principal component</p></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+I_1 &gt; I_2 &gt; \ldots &gt; I_p
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+I_1 + I_2 + \ldots + I_p = I_T
+\]</span></p>
+</div>
+</section>
+<section id="choosing-the-number-of-components" class="slide level2">
+<h2>Choosing the number of components</h2>
+<h4 id="goal"><span style="color:black">Goal:</span></h4>
+<p>Choose <span class="math inline">\(q &lt; p\)</span> in order to keep the maximum inertia with the minimum number of variables.</p>
+<h4 id="several-strategies"><span style="color:black">Several strategies:</span></h4>
+<ul>
+<li><p><span style="color:blue">Elbow criterion</span>: keep the axes whose eigenvalues are located before the drop on the eigenvalue scree.</p></li>
+<li><p><span style="color:blue">Kaiser criterion</span>: only axes with inertia greater than the average inertia <span class="math inline">\(I_T /p\)</span> are kept.</p></li>
+</ul>
+<p><strong>Remark:</strong> these criteria can lead to different choices</p>
+</section>
+<section id="choosing-the-number-of-components-1" class="slide level2">
+<h2>Choosing the number of components</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a><span class="co">#library(FactoMineR)</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a>acp.res <span class="ot">&lt;-</span> <span class="fu">PCA</span>(fromages[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">scale.unit =</span> <span class="cn">TRUE</span>,<span class="at">graph=</span>F)</span>
+<span id="cb45-3"><a href="#cb45-3"></a>acp.res<span class="sc">$</span>eig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        eigenvalue percentage of variance cumulative percentage of variance
+comp 1 5.049113814            56.10126460                          56.10126
+comp 2 1.844418362            20.49353736                          76.59480
+comp 3 0.867800921             9.64223245                          86.23703
+comp 4 0.577384673             6.41538526                          92.65242
+comp 5 0.355210155             3.94677950                          96.59920
+comp 6 0.175311592             1.94790658                          98.54711
+comp 7 0.097434214             1.08260237                          99.62971
+comp 8 0.028431123             0.31590137                          99.94561
+comp 9 0.004895146             0.05439051                         100.00000</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a><span class="co">#library(factoextra)</span></span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="fu">fviz_eig</span>(acp.res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/eboulisvp-1.png" width="240"></p>
+</div>
+</div>
+</section>
+<section id="variables-representation-on-correlation-circles" class="slide level2">
+<h2>Variables’ representation on correlation circles</h2>
+<h4 id="purpose"><span style="color:blue">Purpose:</span></h4>
+<p>Visualize the relations</p>
+<ul>
+<li><p>between variables <span class="math inline">\(\rightarrow\)</span> identify groups of correlated variables</p></li>
+<li><p>between principal components and initial variables <span class="math inline">\(\rightarrow\)</span> interpreting the new variables resulting from the PCA</p></li>
+</ul>
+<h4 id="how"><span style="color:blue">How?</span></h4>
+<ul>
+<li><p>The better a variable is represented, the closer it is to the circle.</p></li>
+<li><p>For two variables perfectly represented on the plane, the cosine of the angle formed by these 2 variables is equal to the correlation coefficient between these two variables.</p></li>
+<li><p>Similarly for the angle formed by a principal component and a variable perfectly represented on the plane.</p></li>
+</ul>
+</section>
+<section id="representation-of-variables" class="slide level2">
+<h2>Representation of variables</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/cerclecorr-1.png" width="480"></p>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<ol type="1">
+<li><p>What can we say about the relationships between variables?</p></li>
+<li><p>What is the concrete meaning of the first two principal components?</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="representation-of-individuals" class="slide level2">
+<h2>Representation of individuals</h2>
+<h4 id="interpreting-the-position-of-individuals"><span style="color:blue">Interpreting the position of individuals</span></h4>
+<ul>
+<li><p>contributes to the understanding of what the principal components represent</p></li>
+<li><p>allows to identify groups of individuals who are similar or on the contrary are distant</p></li>
+</ul>
+<h4 id="how-1"><span style="color:blue">How?</span></h4>
+<ul>
+<li><p>An individual is well represented on the factorial plane if the angle formed by the individual with the axes forming this plane is small (cosine squared criteria close to 1).</p></li>
+<li><p>The distance between two individuals on the plane <span style="color:blue">is only interpretable if they are well represented</span>:</p>
+<ul>
+<li><p>if two well-represented individuals are close, they are similar individuals in the initial space</p></li>
+<li><p>if two well-represented individuals are distant, they are individuals who were distant in the initial space</p></li>
+<li><p>if one of the two individuals is misrepresented, nothing can be said</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="representation-of-individuals-1" class="slide level2">
+<h2>Representation of individuals</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a><span class="fu">fviz_pca_ind</span>(acp.res,<span class="at">axes=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">repel=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/projind-1.png" width="480"></p>
+</div>
+</div>
+</section>
+<section id="representation-of-individuals-2" class="slide level2">
+<h2>Representation of individuals</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>cos2<span class="ot">&lt;-</span><span class="fu">cbind</span>(acp.res<span class="sc">$</span>ind<span class="sc">$</span>cos2[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>],<span class="fu">rowSums</span>(acp.res<span class="sc">$</span>ind<span class="sc">$</span>cos2[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]))</span>
+<span id="cb49-2"><a href="#cb49-2"></a><span class="fu">colnames</span>(cos2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Dim.1"</span>,<span class="st">"Dim.2"</span>,<span class="st">"Plan.1.2"</span>)</span>
+<span id="cb49-3"><a href="#cb49-3"></a>cos2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Dim.1       Dim.2   Plan.1.2
+CarredelEst        0.054513670 0.429989634 0.48450330
+Babybel            0.305932561 0.152149334 0.45808189
+Beaufort           0.782514162 0.100463687 0.88297785
+Bleu               0.103648240 0.085351520 0.18899976
+Camembert          0.107057342 0.418477137 0.52553448
+Cantal             0.702584083 0.100133221 0.80271730
+Chabichou          0.005532395 0.538443706 0.54397610
+Chaource           0.101451314 0.751712152 0.85316347
+Cheddar            0.647661421 0.019219083 0.66688050
+Comte              0.717641173 0.074546157 0.79218733
+Coulomniers        0.159759825 0.290881508 0.45064133
+Edam               0.446589711 0.262189620 0.70877933
+Emmental           0.624347552 0.211478990 0.83582654
+Fr.chevrepatemolle 0.446655376 0.291348951 0.73800433
+Fr.fondu.45        0.015681389 0.134713164 0.15039455
+Fr.frais20nat.     0.858859993 0.124070892 0.98293089
+Fr.frais40nat.     0.930465441 0.037203369 0.96766881
+Maroilles          0.587564687 0.062168583 0.64973327
+Morbier            0.716412761 0.006633021 0.72304578
+Parmesan           0.587302799 0.007603017 0.59490582
+Petitsuisse40      0.915231627 0.035236918 0.95046854
+PontlEveque        0.007303862 0.166423043 0.17372690
+Pyrenees           0.464108938 0.014284961 0.47839390
+Reblochon          0.277707072 0.011700992 0.28940806
+Rocquefort         0.160694290 0.504743837 0.66543813
+SaintPaulin        0.131463626 0.430298747 0.56176237
+Tome               0.012749876 0.055253361 0.06800324
+Vacherin           0.171260304 0.482822070 0.65408237
+Yaourtlaitent.nat. 0.634489274 0.312245808 0.94673508</code></pre>
+</div>
+</div>
+</section>
+<section id="representation-of-individuals-3" class="slide level2">
+<h2>Representation of individuals</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a><span class="fu">fviz_pca_ind</span>(acp.res,<span class="at">axes=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">repel=</span>T,<span class="at">col.ind =</span> <span class="st">"cos2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/projind2-1.png" width="480"></p>
+</div>
+</div>
+<!-- # Unsupervised classification (HCA and K-means) -->
+<!-- ##  -->
+<!-- **Objective**: [Group $n$ individuals into $K$ groups of individuals with common characteristics]{style="color:red"}: -->
+<!-- -  each group should be as homogeneous as possible -->
+<!-- -  members of a class are more similar to members of the same class than to members of other classes -->
+<!-- **Unsupervised classification**: -->
+<!-- - Descriptive purpose -->
+<!-- - [No a priori knowledge about the groups]{style="color:red"} -->
+<!-- - Is it justified to assume the existence of several groups of individuals? -->
+<!-- - Question of the number of groups? [$K$ unknown]{style="color:red"} -->
+<!-- ## Tools -->
+<!-- To classify, we need:  -->
+<!-- - choose a similarity/dissimilarity measure -->
+<!-- - choose a criterion to evaluate the homogeneity of the classes -->
+<!-- - choose an algorithm -->
+<!-- - sometimes also choose a number of classes composing the classification -->
+<!-- ## Dissimilarity -->
+<!-- **Definition** -->
+<!-- - $d(x_{1.},x_{2.}) = d(x_{2.},x_{1.}) \geq 0$ -->
+<!-- - $d(x_{1.},x_{2.}) = 0 \Rightarrow x_{1.} = x_{2.}$ -->
+<!-- - **Example:** euclidian distance (the most used in practice) -->
+<!-- $$ -->
+<!-- d^2(x_{1.},x_{2.}) = \sum_{j=1}^{p}(x_{1j} - x_{2j})^2 -->
+<!-- $$ -->
+<!-- - **Reminder:** -->
+<!-- - normalization of variables (context dependent, scaling issues)  -->
+<!-- - **Course framework:** all variables have the same importance. -->
+<!-- ## Scatter plot -->
+<!-- - **Mean** of a variable: -->
+<!-- $$ -->
+<!-- \bar{x}_{\cdot j} = \frac{1}{n}\sum_{i=1}^{n} x_{ij} \; , \; j=1,\ldots,p -->
+<!-- $$ -->
+<!-- - **Center of gravity** of $X$ (overall average): -->
+<!-- $$ -->
+<!-- g = (\bar{x}_{\cdot 1}, \ldots, \bar{x}_{\cdot p}) -->
+<!-- $$ -->
+<!-- - **Inertia** of $X$: -->
+<!-- $$ -->
+<!-- I_T = \sum_{i=1}^{n} d^2 (x_{i.},g) -->
+<!-- $$ -->
+<!-- ## Decomposition of the inertia -->
+<!-- For a fixed number of groups $K$: -->
+<!-- $$ -->
+<!-- \begin{eqnarray*} -->
+<!-- I_T & = & \sum_{i=1}^{n} d^2 (x_{i.},g)\\ -->
+<!-- & = & \underbrace{\sum_{k=1}^K \sum_{i \in C_k} d^2(x_{i.},g_k)}_{I_{intra}} + \underbrace{\sum_{k=1}^K n_k d^2(g_k,g)}_{I_{inter}} -->
+<!-- \end{eqnarray*} -->
+<!-- $$ -->
+<!-- - $g_k$: barycenter of the group $C_k$ -->
+<!-- - $n_k$: number of individuals in the group $C_k$ -->
+<!-- - [$I_{intra}$: intra-group inertia]{style="color:red"} (dispersion of the points around their center in the different groups) -->
+<!-- - [$I_{inter}$: between-group inerti]{style="color:red"}(separability of groups) -->
+<!-- **Remark:** this decomposition is only valid only if the chosen dissimilarity measure is the Euclidean distance. -->
+<!-- ## Objective of the classification -->
+<!-- **Objective of the classification:** -->
+<!-- $$ -->
+<!-- I_T = I_{intra} + I_{inter} -->
+<!-- $$ -->
+<!-- For a given number of groups $K$, [maximize the inter-group inertia (minimize the intra-group inertia)]{style="color:red"}.  -->
+<!-- **Remark:** $I_T$ is constant for a given dataset. -->
+<!-- **Difficulty:** -->
+
+<!-- - the set of solutions is not visitable (of the order of the order of $K^n$) -->
+<!-- - need to use clever solution space traversal algorithms -->
+<!-- ## HAC -->
+<!-- - [H]{style="color:red"}ierarchical [A]{style="color:red"}scending [C]{style="color:red"}lassification -->
+<!-- - [Ascending]{style="color:red"} method: agglomeration of groups -->
+<!-- - [Hierarchical]{style="color:red"} method: the successive partitions are nested within each other -->
+<!-- - Algorithm:  -->
+<!-- **Initialization:** each individual is a group ($I_{intra} = 0$) -->
+<!-- **One iteration:** merging two groups -->
+<!-- **End:** the $n$ individuals form a single group ($I_{intra} = I_T$) -->
+<!-- ## Choice of groups to merge -->
+<!-- - The merging of two groups is associated with an [increase in intra-group variability]{style="color:red"}; it is desired that this increase be [as small as possible]{style="color:red"}. -->
+<!-- - Increase of the intra-group variability induced by the merging of the $C_k$ and $C_l$ groups -->
+<!-- $$ -->
+<!-- \begin{eqnarray*} -->
+<!--     \Delta & = & I_{intra} (C_k \cup C_l) - I_{intra} (C_k, C_l)\\ -->
+<!--     & = & \frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
+<!--     \end{eqnarray*} -->
+<!-- $$ -->
+<!-- - Dissimilarity between groups (Ward's distance) -->
+<!-- $$ -->
+<!-- d^2(C_k,C_l)=\frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
+<!-- $$ -->
+<!-- ## Remark -->
+<!-- - Other possible dissimilarity measures? -->
+<!-- 1.  -->
+<!-- $$ -->
+<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{min}} \; d(x_{i.},x_{i'.}) -->
+<!-- $$ -->
+<!-- 2.  -->
+<!-- $$ -->
+<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{max}} \; d(x_{i.},x_{i'.}) -->
+<!-- $$ -->
+<!-- 3. -->
+<!-- $$ -->
+<!-- d(C_k,C_l) = \frac{1}{n_l n_k}\sum_{x_{i.} \in C_k, x_{i'.}\in C_l}^{} \; d(x_{i.},x_{i'.}) -->
+<!-- $$ -->
+<!-- ## Dendrogram -->
+<!-- - The partitions of the data obtained by the HAC are represented as a tree: [dendrogram]{style="color:red"}. -->
+<!-- - Fusion of two elements: branch of height proportional to the percentage of inertia loss. -->
+<!-- - Determination of the number of groups: "big difference of inertia". -->
+<!-- ## Example -->
+<!-- ```{r dendro, fig.height=5, fig.width=5} -->
+<!-- tab<-scale(fromages[,-1], center=TRUE,scale=TRUE) -->
+<!-- data.dist <- dist(tab,method = "euclidean") -->
+<!-- data.ward <- hclust(data.dist,method="ward.D2") -->
+<!-- plot(data.ward,hang=-1) -->
+<!-- rect.hclust(data.ward,k=2) -->
+<!-- cluster <- cutree(data.ward, k = 2) -->
+<!-- ``` -->
+<!-- ## Interpretation of groups -->
+<!-- ```{r, fig.height=5, fig.width=5} -->
+<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
+<!-- ``` -->
+<!-- ## Example -->
+<!-- ```{r dendro2, fig.height=5, fig.width=5} -->
+<!-- plot(data.ward,hang=-1) -->
+<!-- rect.hclust(data.ward,k=3) -->
+<!-- cluster <- cutree(data.ward, k = 3) -->
+<!-- ``` -->
+<!-- ## Interpretation of groups -->
+<!-- ```{r, fig.height=5, fig.width=5} -->
+<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
+<!-- ``` -->
+<!-- ## K-means method -->
+<!-- - The number of groups $K$ is fixed a priori. -->
+<!-- - Algorithm: -->
+<!-- **Initialization:** we choose $K$ centers of groups -->
+<!-- $\mu_1,\ldots,\mu_K$ among the individuals. -->
+<!-- **One iteration:** -->
+<!-- Each individual is classified in the group whose center is closest. -->
+<!-- Definition of the new group centers as the barycenters of each group. -->
+<!-- **End:** "convergence'' -->
+<!-- ## Remark -->
+<!-- - "Convergence": decrease of the intra-group inertia at each iteration. -->
+<!-- - Faster algorithm than HAC. -->
+<!-- - The result depends on the initialization. -->
+<!-- - There is a wide variety of initialization modes, often random. -->
+<!-- ## Example -->
+<!-- ```{r kmeans} -->
+<!-- res.k.means <- kmeans(fromages[,-1],centers=3) -->
+<!-- res.k.means$centers -->
+<!-- res.k.means$size -->
+<!-- res.k.means$totss -->
+<!-- res.k.means$withinss -->
+<!-- res.k.means$tot.withinss -->
+<!-- res.k.means$betweenss -->
+<!-- ``` -->
+<!-- ## Example -->
+<!-- ```{r, fig.height=5, fig.width=5} -->
+<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(res.k.means$cluster),repel=T) -->
+<!-- ``` -->
+<!-- ## Choosing the number of groups -->
+<!-- - There is no classification that is strictly better than the others. -->
+<!-- - This means measuring the quality of each competing classification and often making compromises. -->
+<!-- - The interpretability of classes often plays a role. -->
+<!-- ## Exemple -->
+<!-- ```{r} -->
+<!-- inertie.expl <- rep(0,times=10) -->
+<!-- for (k in 2:10){ -->
+<!--   clus <- kmeans(tab,centers=k,nstart=5) -->
+<!--   inertie.expl[k] <- clus$betweenss/clus$totss } -->
+<!-- plot(1:10,inertie.expl,type="b",xlab="Nb. de groupes",ylab="% inertie expliquée") -->
+<!-- ``` -->
 <p><img src="_extensions/davidcarayon/inrae/ressources/bloc-etat.png" class="slide-logo"></p>
 <div class="footer footer-default">
 

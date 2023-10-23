@@ -5,7 +5,7 @@ format:
   inrae-revealjs:
     footer: ""
     chalkboard: true
-    fontsize: 24pt
+    fontsize: 2em
 author: Maud Delattre 
 execute:
   echo: false
@@ -712,7 +712,6 @@ Let $a \in \mathbf{R}$ be a constant and $X$ ($X_1$, $X_2$) any quantitative r.v
 
 -   📝 Exercise (centering and standardizing) : Let $X$ be a r.v. with mean $\mu$ and variance $\sigma^2$ and define the transformed variable $$Y = \frac{X-\mu}{\sigma}$$ What are the expected value and the variance of $Y$?
 
-
 # Some common distributions
 
 ## Bernoulli distribution
@@ -720,9 +719,8 @@ Let $a \in \mathbf{R}$ be a constant and $X$ ($X_1$, $X_2$) any quantitative r.v
 To describe an experiment whose result can take only two values, called by convention, success or failure.
 
 *Ex.: a candidate passes or fails an examination, whether a sick patient is cured or not,* $\ldots$
-    
-[$$X \sim \mathcal{B}(p), \, 0 \leq p \leq 1$$]{style="color:red"}
 
+[$$X \sim \mathcal{B}(p), \, 0 \leq p \leq 1$$]{style="color:red"}
 
 ::: columns
 ::: {.column width="50%"}
@@ -730,6 +728,7 @@ To describe an experiment whose result can take only two values, called by conve
 
 -   Probability distribution: $P(X=0)=1-p$ , $P(X=1)=p$
 :::
+
 ::: {.column width="50%"}
 -   Expectation: $E(X)=p$
 
@@ -743,14 +742,13 @@ To describe an experiment which consists in counting the number of successes aft
 
 [$$X \sim \mathcal{B}(n,p), \, n \in \mathbf{N}, \, 0 \leq p \leq 1$$]{style="color:red"}
 
-
-
 ::: columns
 ::: {.column width="50%"}
 -   Domain: $D_X = \{0,1,\ldots,n\}$
 
 -   Probability distribution: $P(X=k)=\frac{k!}{n! (n-k)!}p^k(1-p)^{n-k}$
 :::
+
 ::: {.column width="50%"}
 -   Expectation: $E(X)=n p$
 
@@ -758,18 +756,15 @@ To describe an experiment which consists in counting the number of successes aft
 :::
 :::
 
-
 ::: {#fig-binom layout-ncol="3"}
+![B(10,0.2)](./Pictures/binom_n10_p02.png){#fig-B1 height="200" width="200" fig-align="center"}
 
-![B(10,0.2)](./Pictures/binom_n10_p02.png){height="200" width="200" #fig-B1 fig-align="center"}
+![B(10,0.5)](./Pictures/binom_n10_p05.png){#fig-B2 height="200" width="200" fig-align="center"}
 
-![B(10,0.5)](./Pictures/binom_n10_p05.png){height="200" width="200" #fig-B2 fig-align="center"}
-
-![B(20,0.2)](./Pictures/binom_n20_p02.png){height="200" width="200" #fig-B3 fig-align="center"}
+![B(20,0.2)](./Pictures/binom_n20_p02.png){#fig-B3 height="200" width="200" fig-align="center"}
 
 Binomial distributions
 :::
-
 
 ## Poisson distribution
 
@@ -783,6 +778,7 @@ To describe counts.
 
 -   Probability distribution: $P(X=k)=e^{-\lambda} \frac{\lambda^k}{k!}$
 :::
+
 ::: {.column width="50%"}
 -   Expected value: $E(X)=\lambda$
 
@@ -790,18 +786,15 @@ To describe counts.
 :::
 :::
 
-
 ::: {#fig-pois layout-ncol="3"}
+![P(1.5)](./Pictures/pois_l1_5.png){#fig-P1 height="200" width="200" fig-align="center"}
 
-![P(1.5)](./Pictures/pois_l1_5.png){height="200" width="200" #fig-P1 fig-align="center"}
+![P(10)](./Pictures/pois_l_10.png){#fig-P2 height="200" width="200" fig-align="center"}
 
-![P(10)](./Pictures/pois_l_10.png){height="200" width="200" #fig-P2 fig-align="center"}
-
-![P(50)](./Pictures/pois_l_50.png){height="200" width="200" #fig-P3 fig-align="center"}
+![P(50)](./Pictures/pois_l_50.png){#fig-P3 height="200" width="200" fig-align="center"}
 
 Poisson distributions
 :::
-
 
 ## Gaussian distribution
 
@@ -822,16 +815,14 @@ Poisson distributions
 :::
 
 ::: {#fig-gaussian layout-ncol="3"}
-![N(0,1)](./Pictures/norm_0_1_bis.png){height="200" width="200" #fig-G1 fig-align="center"}
+![N(0,1)](./Pictures/norm_0_1_bis.png){#fig-G1 height="200" width="200" fig-align="center"}
 
-![N(0,10)](./Pictures/norm_0_10_bis.png){height="200" width="200" #fig-G2 fig-align="center"}
+![N(0,10)](./Pictures/norm_0_10_bis.png){#fig-G2 height="200" width="200" fig-align="center"}
 
-![N(-100,1)](./Pictures/norm_100_1_bis.png){height="200" width="200" #fig-G3 fig-align="center"}
+![N(-100,1)](./Pictures/norm_100_1_bis.png){#fig-G3 height="200" width="200" fig-align="center"}
 
 Gaussian densities, *dotted curve:* $\mathcal{N}(0,1)$
 :::
-
-
 
 # Joint distributions
 
@@ -842,7 +833,6 @@ Gaussian densities, *dotted curve:* $\mathcal{N}(0,1)$
 Two random variables $X_1$ and $X_2$ are [independent]{style="color:red"} when knowing the value taken by $X_1$ gives no information about the value that will be taken by $X_2$ and vice versa.
 
 **Examples** $\ldots$
-
 
 ## Covariance
 
@@ -884,38 +874,31 @@ Remarks :
 
 ✏️ Graphical considerations $\ldots$
 
-
 ## Joint distributions
 
 **Discrete r.v.**
 
-[Joint distribution:]{style="color:blue"} set of values $p_{ij}$ defined as:
-$$p_{ij} = P(X=x_i, Y=y_j)$$
-*Remark*: $\sum_{i,j} p_{ij} = 1$
-
+[Joint distribution:]{style="color:blue"} set of values $p_{ij}$ defined as: $$p_{ij} = P(X=x_i, Y=y_j)$$ *Remark*: $\sum_{i,j} p_{ij} = 1$
 
 If $X$ and $Y$ are [independent]{style="color:blue"}, then $$P(X=x_i  \cap Y=y_j) = P(X=x_i) P(Y=y_j)$$
 
-.  .  .
+. . .
 
 **Continuous r.v.**
 
 If $X$ and $Y$ are [independent]{style="color:blue"}, then $$f(x,y) = h(x) g(y)$$
 
-
 ## Central limit theorem
 
-Suppose $X_{1},\ldots ,X_{n}$ is a sequence of [i.i.d.]{style="color:red"} random variables with  $\mathbb{E}[X_{i}]=\mu$ and $V[X_{i}]=\sigma ^{2}<\infty$. Then as $n$ approaches infinity, the random variables $\sqrt {n}({\bar {X}}_{n}-\mu )$ converge in distribution to a normal $\mathcal {N}(0,\sigma ^{2})$:
-[$${{\sqrt {n}}\left({\bar {X}}_{n}-\mu \right)\ \xrightarrow {d} \ {\mathcal {N}}\left(0,\sigma ^{2}\right).}$$]{style="color:red"}
-
-
-
+Suppose $X_{1},\ldots ,X_{n}$ is a sequence of [i.i.d.]{style="color:red"} random variables with $\mathbb{E}[X_{i}]=\mu$ and $V[X_{i}]=\sigma ^{2}<\infty$. Then as $n$ approaches infinity, the random variables $\sqrt {n}({\bar {X}}_{n}-\mu )$ converge in distribution to a normal $\mathcal {N}(0,\sigma ^{2})$: [$${{\sqrt {n}}\left({\bar {X}}_{n}-\mu \right)\ \xrightarrow {d} \ {\mathcal {N}}\left(0,\sigma ^{2}\right).}$$]{style="color:red"}
 
 # Statistical inference
 
 ## Outline
 
-The goal is to introduce tools to draw conclusions about a population from observations collected on a subset of individuals in that population (sample)^[Image from https://commons.wikimedia.org/wiki/File:01fig-inference.png?uselang=fr].
+The goal is to introduce tools to draw conclusions about a population from observations collected on a subset of individuals in that population (sample)[^1].
+
+[^1]: Image from https://commons.wikimedia.org/wiki/File:01fig-inference.png?uselang=fr
 
 ::: columns
 ::: {.column width="50%"}
@@ -931,9 +914,9 @@ The goal is to introduce tools to draw conclusions about a population from obser
 :::
 :::
 
-This requires the definition of a [model]{style="color:red"}, i.e. the specification of a random distribution for the data, and possibly an equation linking the [parameters of the distribution]{style="color:red"}[^1] of the variable to be explained to the explanatory variables.
+This requires the definition of a [model]{style="color:red"}, i.e. the specification of a random distribution for the data, and possibly an equation linking the [parameters of the distribution]{style="color:red"}[^2] of the variable to be explained to the explanatory variables.
 
-[^1]: [The model parameters are the quantities to be estimated and tested.]{style="color:red"}
+[^2]: [The model parameters are the quantities to be estimated and tested.]{style="color:red"}
 
 ## Examples
 
@@ -961,8 +944,6 @@ $$X_i \sim \mathcal{N}(\mu,\sigma^2)$$
 
 $\mu$ and $\sigma^2$ are unknown. [$\mu$ represents the average cholesterol level in the population of interest.]{style="color:red"}. The $n$-sample is used to draw conclusions about $\mu$.
 
-
-
 ## Prerequisites
 
 **Gaussian variables manipulation**
@@ -970,7 +951,6 @@ $\mu$ and $\sigma^2$ are unknown. [$\mu$ represents the average cholesterol leve
 -   [Scaling]{style="color:blue"} : Consider $X \sim \mathcal{N}(\mu,\sigma^2)$ and define $Z=\frac{X-\mu}{\sigma}$. Then, $$Z \sim \mathcal{N}(0,1)$$
 
 -   [Sum of independent gaussian r.v.'s]{style="color:blue"} : Consider $X_i \sim \mathcal{N}(\mu_i,\sigma_i^2)$, $i=1,\ldots,n$ **independent** and define $Z=\sum_{i} X_i$. Then, $$Z \sim \mathcal{N}(\sum_{i}\mu_i,\sum_{i}\sigma_i^2)$$
-
 
 ## Estimator, estimation
 
@@ -982,9 +962,9 @@ $\mu$ and $\sigma^2$ are unknown. [$\mu$ represents the average cholesterol leve
 
 ## A simple example
 
-Let's consider a Gaussian model, *ie* $X_i \underset{i.i.d.}{\sim} \mathcal{N}(\mu,\sigma^2)$[^2] and $$\bar{X_n}=\dfrac{1}{n}\sum\limits_{i=1}^{n} X_i$$
+Let's consider a Gaussian model, *ie* $X_i \underset{i.i.d.}{\sim} \mathcal{N}(\mu,\sigma^2)$[^3] and $$\bar{X_n}=\dfrac{1}{n}\sum\limits_{i=1}^{n} X_i$$
 
-[^2]: Think, for example, of the model for cholesterol levels in the previous slide.
+[^3]: Think, for example, of the model for cholesterol levels in the previous slide.
 
 1.  Is $\bar{X_n}$ a random variable or a constant?
 
@@ -996,11 +976,11 @@ Let's consider a Gaussian model, *ie* $X_i \underset{i.i.d.}{\sim} \mathcal{N}(\
 
 ## How are estimators defined in practice?
 
--   The [maximum likelihood estimation (MLE)]{style="color:red"} method can be used to estimate the parameters of a model[^3].
+-   The [maximum likelihood estimation (MLE)]{style="color:red"} method can be used to estimate the parameters of a model[^4].
 
 -   The idea is to find the value of the unknown parameter(s) that maximize the probability (*i.e.* the likelihood) of the data being observed (given the model).
 
-[^3]: Many other estimation methods exist, such as the least squares method for example.
+[^4]: Many other estimation methods exist, such as the least squares method for example.
 
 📝 *Example:* Derivation of $\bar{X_n}$ as the maximum likelihood estimator of $\mu$ in the Gaussian model.
 
@@ -1050,7 +1030,6 @@ $[A_n,B_n]$ is called **probability interval**. The **confidence interval** is t
 
 ## What if $\sigma^2$ is not known?
 
-
 ## Important probability distributions and results
 
 [Chi-square distribution]{style="color:blue"} : Let $X_1$, $X_2$, ..., $X_n$ be $n$ independent r.v. and identically distributed according $\mathcal{N}(0,1)$, and let [$U = X_1^2 +X_2^2 +...+X_n^2$]{style="color:red"}.
@@ -1065,21 +1044,13 @@ Then [$$U \sim \chi^2(n)$$]{style="color:red"}
 :::
 :::
 
-[Important property]{style="color:blue"} : Let $X_1$, $X_2$, \ldots, $X_n$ be $n$ independent r.v. and identically distributed according $\mathcal{N}(\mu,\sigma^2)$. Then [$$\frac{1}{\sigma^2}\sum_{i=1}^{n} (X_i - \bar{X}_n)^2 \sim \chi^2(n-1)$$]{style="color:red"} 
+[Important property]{style="color:blue"} : Let $X_1$, $X_2$, \ldots, $X_n$ be $n$ independent r.v. and identically distributed according $\mathcal{N}(\mu,\sigma^2)$. Then [$$\frac{1}{\sigma^2}\sum_{i=1}^{n} (X_i - \bar{X}_n)^2 \sim \chi^2(n-1)$$]{style="color:red"}
 
 ## Important probability distributions and results
 
 [Student distribution]{style="color:blue"} : Let $X \sim \mathcal{N}(0,1)$ and $U \sim \chi^2(\nu)$ independent, and let [$T = X/\sqrt{(U/\nu)}$]{style="color:red"}. Then [$$T \sim \mathcal{T}(\nu)$$]{style="color:red"}
 
-
-
-
-
-
-
 [Fisher distribution]{style="color:blue"} : Let $U_1$ and $U_2$ be independent r.v. s.t. $U_1 \sim \chi^2(\nu_1)$ and $U_2 \sim \chi^2(\nu_2)$ , and let [$F = (U_1/\nu_1)/(U_2/\nu_2)$]{style="color:red"}. Then [$$F \sim \mathcal{F}(\nu_1,\nu_2)$$]{style="color:red"}
-
-
 
 ::: {#fig-student-fisher layout-ncol="3"}
 ![$\mathcal{T}(1)$](./Pictures/student1.png){#fig-st1 height="200" width="200" fig.align="left"}
@@ -1090,7 +1061,6 @@ Then [$$U \sim \chi^2(n)$$]{style="color:red"}
 
 *dotted curve:* $\mathcal{N}(0,1)$
 :::
-
 
 ## What if $\sigma^2$ is not known?
 
@@ -1170,7 +1140,6 @@ $$
 
 3.  State the decision rule of the test.
 
-
 ## Back to the example
 
 ```{r test, echo=T}
@@ -1179,9 +1148,9 @@ t.test(data$cholesterol, mu=400, alternative="two.sided")
 
 **Discussion**
 
-- p-value concept
+-   p-value concept
 
-- What would have changed if other alternative hypothesis had been considered? 
+-   What would have changed if other alternative hypothesis had been considered?
 
 . . .
 
@@ -1191,12 +1160,612 @@ t.test(data$cholesterol, mu=400, alternative="greater")
 
 ## Errors and power of a test
 
--   type 1 error: 
+-   type 1 error:
 
--   type 2 error: 
+-   type 2 error:
 
--   power: 
+-   power:
 
-<!-- ## P-value -->
+# Principal Component Analysis and data clustering
 
-<!-- Let $t_n$ be the value of the test statistic $T_n$ obtained from the observations. The **p-value** is the probability under $H_0$ that $T_n$ takes values beyond a threshold that would be given by $t_n$. This quantity quantifies the risk we take in rejecting $H_0$ with the observed data. To control the risk, the decision rule will consist in rejecting $H_0$ if the value of the p-value is lower than $\alpha$. -->
+## Principal Component Analysis (PCA)
+
+
+[P]{style="color:red"}rincipal [C]{style="color:red"}omponent [A]{style="color:red"}nalysis : multidimensional exploratory analysis method
+
+#### [Objectives]{style="color:black"}
+
+- [Represent]{style="color:blue"} the observation of $p$ variables ($p>3$) in a space of [reduced dimension]{style="color:blue"} (typically in a plane or a 3-dimensional space) by [limiting the loss of information]{style="color:blue"}, 
+
+- [Summarize]{style="color:blue"} the information in a synthetic way: how to keep the essential information of the data?
+
+#### [Tools]{style="color:black"}
+
+- No prior statistical assumption
+
+- Matrix calculation, vectors and eigenvalues
+
+#### [Data]{style="color:black"}
+
+[PCA can only be applied to quantitative variables observed on the same individuals.]{style="color:red"}
+
+## Example
+
+
+
+Cheese is made from cow's, goat's or sheep's milk. It is a source of protein, calcium, but also vitamin A (retinol) and vitamin B9 (folic acid). The objective of this study is to specify the nutritional value of the most common cheeses.
+
+1. Which cheeses have the same nutritional profile, and which ones have different profiles? Can we highlight the main dimensions of nutritional variability of this set of cheeses?
+
+2. Associate similar cheeses with a particular nutritional profile.
+
+
+```{r dataimport}
+fromages <- read.table("fromages.txt",header=T,sep="\t")
+row.names(fromages) <- fromages$Fromages
+str(fromages)
+#head(fromages[,-1])
+```
+
+## Notations 
+
+#### [Data]{style="color:black"}
+
+The values taken by the [$p$ variables]{style="color:blue"} on [$n$ individuals]{style="color:blue"} are presented in a $n\times p$ table $X$:
+
+$$X=\left[\begin{array}{cccc}
+ x_{11} & x_{12} & \ldots & x_{1p} \\
+ x_{21} & x_{22} & \ldots & x_{2p} \\
+ \vdots & \vdots & \vdots & \vdots \\
+ x_{n1} & x_{n2} & \ldots & x_{np}
+\end{array}\right]$$
+
+- $x_{ij}$ is the value taken by individual $i$ for the variable $j$.
+
+- The line [$x_{i\cdot}=(x_{i1} , x_{i2} , \ldots , x_{ip})$]{style="color:blue"} corresponds to the values of $p$ variables for individual $i$.
+
+- The column [$x_{\cdot j}=(x_{1j},x_{2j},\ldots,x_{nj})$]{style="color:blue"} corresponds to the values of the variable $j$ on the $n$ individuals.
+
+
+#### [Mean and variance]{style="color:black"} 
+
+- Mean of variable $j$ : $\bar{x}_{\cdot j} = \frac{1}{n} \sum\limits_{i=1}^{n} x_{ij}$
+
+- Variance of variable $j$ : $\sigma^2_{j} = \frac{1}{n} \sum\limits_{i=1}^{n} (x_{ij}-\bar{x}_{\cdot j})^2$
+
+## Preliminary data transformations
+
+::: {.fragment fragment-index=1}
+#### [Data transformations:]{style="color:black"}
+
+- Centering data: $\tilde{X} = (x_{ij}-\bar{x}_{\cdot j})_{1\leq i \leq n , 1\leq j \leq p}$
+
+- Centering and standardizing data:  $\tilde{X} = \left(\frac{x_{ij}-\bar{x}_{\cdot j}}{\sigma_j}\right)_{1\leq i \leq n , 1\leq j \leq p}$
+:::
+
+::: {.fragment fragment-index=2}
+#### [Why standardizing ?]{style="color:black"}
+
+- The variables are of different natures; for example: age, salary, number of children
+
+- it is felt that [their respective influences]{style="color:blue"} in the analysis [should not depend on their variability]{style="color:blue"};
+for example in the analysis of grades: should a subject with a high variance have a greater influence in the analysis?
+::: 
+
+::: {.fragment fragment-index=3}
+
+**Example: Should the data be standardized?**
+
+```{r standardizecheese, echo=TRUE}
+apply(fromages[,-1],2,mean)
+apply(fromages[,-1],2,sd)
+```
+::: 
+
+
+## PCA's goals
+
+::: {.fragment fragment-index=1}
+- Extracting the essential information from a table $X$ by providing the user with [interpretation-friendly graphical representations]{style="color:blue"}.
+
+- Data compression/summary of large datasets
+
+- Two main aspects :
+
+    1. an analysis of the [similarities between individuals]{style="color:blue"} 
+    $\rightarrow$ characterization of the individuals with the available variables
+    
+    2. an analysis of the [relationships between variables]{style="color:blue"} 
+
+::: 
+
+::: {.fragment fragment-index=2, style="text-align:center"}
+[In what follows, PCA is presented on centered and standardized data tables.]{style="color:red"}
+:::
+
+## The space (the cloud) of individuals
+
+Geometrically, the individuals in $X$ correspond to $n$ points of $\mathbf{R}^p$.
+
+::: columns
+::: {.column width="50%"}
+
+- [Similarity between individuals]{style="color:blue"}: euclidian distance
+$$
+d_{ind}(i_1,i_2) = \sqrt{\sum_{j=1}^{p} (x_{i_1j}-x_{i_2j})^2} = \mid\mid x_{i_1 \cdot} - x_{i_2 \cdot} \mid\mid_p 
+$$ 
+
+- [Inertia]{style="color:blue"} $\rightarrow$ variability between individuals
+$$
+\begin{eqnarray*}
+I_{ind} & = & \frac{1}{n} \sum_{j=1}^{p}\sum_{i=1}^{n} (x_{ij}-\bar{x}_{\cdot j})^2\\
+& = & \frac{1}{n} \sum_{i=1}^{n} \mid \mid x_{i\cdot} - g\mid \mid ^2\\
+& = & \sum_{j=1}^{p} \sigma^2_{j}
+\end{eqnarray*}
+$$
+:::
+::: {.column width="50%"}
+- [Center of gravity of the cloud]{style="color:blue"}:
+$$
+g = (\bar{x}_{\cdot 1},\ldots,\bar{x}_{\cdot p})
+$$
+
+- The variance of the $j$-th variable is given by
+$$\sigma^2_{j} = \frac{1}{n} \sum\limits_{i=1}^{n} (x_{ij}-\bar{x}_{\cdot j})^2$$ 
+
+- **Standardized case:** $I_{ind} = p$
+
+- **Remark:** influence of each variable different in the non standardized case
+:::
+:::
+
+## The space (the cloud) of variables
+
+Geometrically, the quantitative variables in the data table $X$ correspond to $p$ points of $\mathbf{R}^n$.
+
+- [Distance between variables]{style="color:blue"}: scalar product
+$$
+< x_{\cdot j_1}, x_{\cdot j_2} > = \frac{1}{n} \sum_{i=1}^{n}   x_{i j_1} x_{i j_2}
+$$
+$\hookrightarrow$ Expresses the [correlation]{style="color:blue"} between the two variables (reduced case). Also a cosine.
+
+- The [distance]{style="color:blue"} between two variables is given by the norm associated with this scalar product
+$$
+d_{var}(j_1,j_2) = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (x_{ij_1}-x_{ij_2})^2} = \mid\mid x_{\cdot j_1} - x_{\cdot j_2 } \mid\mid_n
+$$
+- [Inertia (variability) between variables]{style="color:blue"}
+$$
+I_{var} = \sum_{j=1}^{p} \mid\mid x_{\cdot j}\mid\mid_n^2
+$$
+
+- Remark :
+$$
+I_{var} = I_{ind} (= p)
+$$
+
+## Principal components and dimension reduction
+
+::: {.fragment fragment-index=1}
+- If $p > 3$, the individuals' cloud in $\mathbf{R}^p$ is not representable.
+
+- The PCA method produces an [approximate representation]{style="color:blue"} in a low dimensional space (usually 2 or 3) by constructing from the $p$ (correlated) variables $q<p$ new variables called [principal components]{style="color:blue"}
+
+$\Rightarrow$ in this new reduced space, the cloud is more easily represented and the analysis is easier.
+:::
+
+
+
+::: {.fragment fragment-index=2}
+- The principal components ($p$ in total) are constructed by matrix algebra operations such that
+
+    - Each principal component is [linear combination of $p$ initial variables]{style="color:blue"}
+
+    - The principal components are [orthogonal]{style="color:blue"} to each other (*i.e.* uncorrelated)
+
+    - Each principal component carries a certain proportion of the total inertia $\rightarrow$ minimize the loss of information
+    
+    - If $I_k$ is the inertia carried by $k$th principal component 
+
+$$
+I_1 > I_2 > \ldots > I_p
+$$
+
+and
+
+$$
+I_1 + I_2 + \ldots + I_p = I_T
+$$
+:::
+
+## Choosing the number of components
+
+#### [Goal:]{style="color:black"} 
+
+Choose $q < p$ in order to keep the maximum inertia with the minimum number of variables.
+
+#### [Several strategies:]{style="color:black"}
+
+- [Elbow criterion]{style="color:blue"}: keep the axes whose eigenvalues are located before the drop on the eigenvalue scree.
+
+- [Kaiser criterion]{style="color:blue"}: only axes with inertia greater than the average inertia $I_T /p$ are kept.
+
+**Remark:** these criteria can lead to different choices
+
+## Choosing the number of components
+
+
+```{r factominer,echo=F,include=F}
+library(FactoMineR)
+library(factoextra)
+```
+
+```{r acpvp,echo=TRUE}
+#library(FactoMineR)
+acp.res <- PCA(fromages[,-1], scale.unit = TRUE,graph=F)
+acp.res$eig
+```
+
+```{r eboulisvp, echo=T, fig.height=2.5, fig.width=2.5}
+#library(factoextra)
+fviz_eig(acp.res)
+```
+
+
+
+## Variables' representation on correlation circles
+
+#### [Purpose:]{style="color:blue"} 
+
+Visualize the relations
+
+- between variables $\rightarrow$ identify groups of correlated variables
+
+- between principal components and initial variables $\rightarrow$ interpreting the new variables resulting from the PCA
+
+
+#### [How?]{style="color:blue"}
+
+- The better a variable is represented, the closer it is to the circle.
+
+- For two variables perfectly represented on the plane, the cosine of the angle formed by these 2 variables is equal to the correlation coefficient between these two variables.
+
+- Similarly for the angle formed by a principal component and a variable perfectly represented on the plane.
+
+## Representation of variables
+
+::: columns
+::: {.column width="50%"}
+```{r cerclecorr, fig.height=5, fig.width=5}
+fviz_pca_var(acp.res,axes=c(1,2),repel=T)
+```
+:::
+
+
+::: {.column width="50%"}
+1.  What can we say about the relationships between variables?
+
+2.  What is the concrete meaning of the first two principal components?
+:::
+:::
+
+
+## Representation of individuals
+
+#### [Interpreting the position of individuals]{style="color:blue"}
+
+- contributes to the understanding of what the principal components represent
+
+- allows to identify groups of individuals who are similar or on the contrary are distant
+
+
+#### [How?]{style="color:blue"}
+
+- An individual is well represented on the factorial plane if the angle formed by the individual with the axes forming this plane is small (cosine squared criteria close to 1).
+
+- The distance between two individuals on the plane [is only interpretable if they are well represented]{style="color:blue"}:
+
+    - if two well-represented individuals are close, they are similar individuals in the initial space
+
+    - if two well-represented individuals are distant, they are individuals who were distant in the initial space
+
+    - if one of the two individuals is misrepresented, nothing can be said
+
+## Representation of individuals
+
+```{r projind, fig.height=5, fig.width=5, echo=TRUE}
+fviz_pca_ind(acp.res,axes=c(1,2),repel=T)
+```
+
+## Representation of individuals
+
+
+```{r, echo=TRUE}
+cos2<-cbind(acp.res$ind$cos2[,1:2],rowSums(acp.res$ind$cos2[,1:2]))
+colnames(cos2) <- c("Dim.1","Dim.2","Plan.1.2")
+cos2
+```
+
+## Representation of individuals
+
+```{r projind2, fig.height=5, fig.width=5, echo=TRUE}
+fviz_pca_ind(acp.res,axes=c(1,2),repel=T,col.ind = "cos2")
+```
+
+<!-- # Unsupervised classification (HCA and K-means) -->
+
+<!-- ##  -->
+
+<!-- **Objective**: [Group $n$ individuals into $K$ groups of individuals with common characteristics]{style="color:red"}: -->
+
+<!-- -  each group should be as homogeneous as possible -->
+
+<!-- -  members of a class are more similar to members of the same class than to members of other classes -->
+
+<!-- **Unsupervised classification**: -->
+
+<!-- - Descriptive purpose -->
+
+<!-- - [No a priori knowledge about the groups]{style="color:red"} -->
+
+<!-- - Is it justified to assume the existence of several groups of individuals? -->
+
+<!-- - Question of the number of groups? [$K$ unknown]{style="color:red"} -->
+
+<!-- ## Tools -->
+
+<!-- To classify, we need:  -->
+
+<!-- - choose a similarity/dissimilarity measure -->
+
+<!-- - choose a criterion to evaluate the homogeneity of the classes -->
+
+<!-- - choose an algorithm -->
+
+<!-- - sometimes also choose a number of classes composing the classification -->
+
+
+<!-- ## Dissimilarity -->
+
+<!-- **Definition** -->
+
+<!-- - $d(x_{1.},x_{2.}) = d(x_{2.},x_{1.}) \geq 0$ -->
+
+<!-- - $d(x_{1.},x_{2.}) = 0 \Rightarrow x_{1.} = x_{2.}$ -->
+
+<!-- - **Example:** euclidian distance (the most used in practice) -->
+
+<!-- $$ -->
+<!-- d^2(x_{1.},x_{2.}) = \sum_{j=1}^{p}(x_{1j} - x_{2j})^2 -->
+<!-- $$ -->
+
+<!-- - **Reminder:** -->
+
+<!-- - normalization of variables (context dependent, scaling issues)  -->
+
+<!-- - **Course framework:** all variables have the same importance. -->
+
+
+<!-- ## Scatter plot -->
+
+<!-- - **Mean** of a variable: -->
+<!-- $$ -->
+<!-- \bar{x}_{\cdot j} = \frac{1}{n}\sum_{i=1}^{n} x_{ij} \; , \; j=1,\ldots,p -->
+<!-- $$ -->
+
+<!-- - **Center of gravity** of $X$ (overall average): -->
+<!-- $$ -->
+<!-- g = (\bar{x}_{\cdot 1}, \ldots, \bar{x}_{\cdot p}) -->
+<!-- $$ -->
+
+<!-- - **Inertia** of $X$: -->
+<!-- $$ -->
+<!-- I_T = \sum_{i=1}^{n} d^2 (x_{i.},g) -->
+<!-- $$ -->
+
+
+<!-- ## Decomposition of the inertia -->
+
+<!-- For a fixed number of groups $K$: -->
+
+<!-- $$ -->
+<!-- \begin{eqnarray*} -->
+<!-- I_T & = & \sum_{i=1}^{n} d^2 (x_{i.},g)\\ -->
+<!-- & = & \underbrace{\sum_{k=1}^K \sum_{i \in C_k} d^2(x_{i.},g_k)}_{I_{intra}} + \underbrace{\sum_{k=1}^K n_k d^2(g_k,g)}_{I_{inter}} -->
+<!-- \end{eqnarray*} -->
+<!-- $$ -->
+
+
+<!-- - $g_k$: barycenter of the group $C_k$ -->
+
+<!-- - $n_k$: number of individuals in the group $C_k$ -->
+
+<!-- - [$I_{intra}$: intra-group inertia]{style="color:red"} (dispersion of the points around their center in the different groups) -->
+
+<!-- - [$I_{inter}$: between-group inerti]{style="color:red"}(separability of groups) -->
+
+<!-- **Remark:** this decomposition is only valid only if the chosen dissimilarity measure is the Euclidean distance. -->
+
+<!-- ## Objective of the classification -->
+
+<!-- **Objective of the classification:** -->
+
+<!-- $$ -->
+<!-- I_T = I_{intra} + I_{inter} -->
+<!-- $$ -->
+
+<!-- For a given number of groups $K$, [maximize the inter-group inertia (minimize the intra-group inertia)]{style="color:red"}.  -->
+
+<!-- **Remark:** $I_T$ is constant for a given dataset. -->
+
+<!-- **Difficulty:** -->
+
+<!-- - the set of solutions is not visitable (of the order of the order of $K^n$) -->
+
+<!-- - need to use clever solution space traversal algorithms -->
+
+<!-- ## HAC -->
+
+<!-- - [H]{style="color:red"}ierarchical [A]{style="color:red"}scending [C]{style="color:red"}lassification -->
+
+<!-- - [Ascending]{style="color:red"} method: agglomeration of groups -->
+
+<!-- - [Hierarchical]{style="color:red"} method: the successive partitions are nested within each other -->
+
+<!-- - Algorithm:  -->
+
+<!-- **Initialization:** each individual is a group ($I_{intra} = 0$) -->
+
+<!-- **One iteration:** merging two groups -->
+
+<!-- **End:** the $n$ individuals form a single group ($I_{intra} = I_T$) -->
+
+<!-- ## Choice of groups to merge -->
+
+<!-- - The merging of two groups is associated with an [increase in intra-group variability]{style="color:red"}; it is desired that this increase be [as small as possible]{style="color:red"}. -->
+
+<!-- - Increase of the intra-group variability induced by the merging of the $C_k$ and $C_l$ groups -->
+
+<!-- $$ -->
+<!-- \begin{eqnarray*} -->
+<!--     \Delta & = & I_{intra} (C_k \cup C_l) - I_{intra} (C_k, C_l)\\ -->
+<!--     & = & \frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
+<!--     \end{eqnarray*} -->
+<!-- $$ -->
+<!-- - Dissimilarity between groups (Ward's distance) -->
+<!-- $$ -->
+<!-- d^2(C_k,C_l)=\frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
+<!-- $$ -->
+
+
+<!-- ## Remark -->
+
+<!-- - Other possible dissimilarity measures? -->
+
+<!-- 1.  -->
+
+<!-- $$ -->
+<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{min}} \; d(x_{i.},x_{i'.}) -->
+<!-- $$ -->
+
+<!-- 2.  -->
+<!-- $$ -->
+<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{max}} \; d(x_{i.},x_{i'.}) -->
+<!-- $$ -->
+
+<!-- 3. -->
+<!-- $$ -->
+<!-- d(C_k,C_l) = \frac{1}{n_l n_k}\sum_{x_{i.} \in C_k, x_{i'.}\in C_l}^{} \; d(x_{i.},x_{i'.}) -->
+<!-- $$ -->
+
+
+<!-- ## Dendrogram -->
+
+<!-- - The partitions of the data obtained by the HAC are represented as a tree: [dendrogram]{style="color:red"}. -->
+
+<!-- - Fusion of two elements: branch of height proportional to the percentage of inertia loss. -->
+
+<!-- - Determination of the number of groups: "big difference of inertia". -->
+
+<!-- ## Example -->
+
+
+<!-- ```{r dendro, fig.height=5, fig.width=5} -->
+<!-- tab<-scale(fromages[,-1], center=TRUE,scale=TRUE) -->
+<!-- data.dist <- dist(tab,method = "euclidean") -->
+<!-- data.ward <- hclust(data.dist,method="ward.D2") -->
+<!-- plot(data.ward,hang=-1) -->
+<!-- rect.hclust(data.ward,k=2) -->
+<!-- cluster <- cutree(data.ward, k = 2) -->
+<!-- ``` -->
+
+<!-- ## Interpretation of groups -->
+
+
+<!-- ```{r, fig.height=5, fig.width=5} -->
+<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
+<!-- ``` -->
+
+<!-- ## Example -->
+
+
+<!-- ```{r dendro2, fig.height=5, fig.width=5} -->
+<!-- plot(data.ward,hang=-1) -->
+<!-- rect.hclust(data.ward,k=3) -->
+<!-- cluster <- cutree(data.ward, k = 3) -->
+<!-- ``` -->
+
+<!-- ## Interpretation of groups -->
+
+
+<!-- ```{r, fig.height=5, fig.width=5} -->
+<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
+<!-- ``` -->
+
+<!-- ## K-means method -->
+
+<!-- - The number of groups $K$ is fixed a priori. -->
+
+<!-- - Algorithm: -->
+
+<!-- **Initialization:** we choose $K$ centers of groups -->
+<!-- $\mu_1,\ldots,\mu_K$ among the individuals. -->
+
+<!-- **One iteration:** -->
+
+<!-- Each individual is classified in the group whose center is closest. -->
+
+
+<!-- Definition of the new group centers as the barycenters of each group. -->
+
+<!-- **End:** "convergence'' -->
+
+
+<!-- ## Remark -->
+
+<!-- - "Convergence": decrease of the intra-group inertia at each iteration. -->
+
+<!-- - Faster algorithm than HAC. -->
+
+<!-- - The result depends on the initialization. -->
+
+<!-- - There is a wide variety of initialization modes, often random. -->
+
+
+<!-- ## Example -->
+
+
+<!-- ```{r kmeans} -->
+<!-- res.k.means <- kmeans(fromages[,-1],centers=3) -->
+<!-- res.k.means$centers -->
+<!-- res.k.means$size -->
+<!-- res.k.means$totss -->
+<!-- res.k.means$withinss -->
+<!-- res.k.means$tot.withinss -->
+<!-- res.k.means$betweenss -->
+<!-- ``` -->
+
+<!-- ## Example -->
+
+<!-- ```{r, fig.height=5, fig.width=5} -->
+<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(res.k.means$cluster),repel=T) -->
+<!-- ``` -->
+
+<!-- ## Choosing the number of groups -->
+
+<!-- - There is no classification that is strictly better than the others. -->
+
+<!-- - This means measuring the quality of each competing classification and often making compromises. -->
+
+<!-- - The interpretability of classes often plays a role. -->
+
+
+<!-- ## Exemple -->
+
+<!-- ```{r} -->
+<!-- inertie.expl <- rep(0,times=10) -->
+<!-- for (k in 2:10){ -->
+<!--   clus <- kmeans(tab,centers=k,nstart=5) -->
+<!--   inertie.expl[k] <- clus$betweenss/clus$totss } -->
+<!-- plot(1:10,inertie.expl,type="b",xlab="Nb. de groupes",ylab="% inertie expliquée") -->
+<!-- ``` -->
+
