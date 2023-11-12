@@ -1323,7 +1323,7 @@ $$\sigma^2_{j} = \frac{1}{n} \sum\limits_{i=1}^{n} (x_{ij}-\bar{x}_{\cdot j})^2$
 
 Geometrically, the quantitative variables in the data table $X$ correspond to $p$ points of $\mathbf{R}^n$.
 
-- [Distance between variables]{style="color:blue"}: scalar product
+- [Scalar product]{style="color:blue"}: 
 $$
 < x_{\cdot j_1}, x_{\cdot j_2} > = \frac{1}{n} \sum_{i=1}^{n}   x_{i j_1} x_{i j_2}
 $$
@@ -1491,281 +1491,273 @@ cos2
 fviz_pca_ind(acp.res,axes=c(1,2),repel=T,col.ind = "cos2")
 ```
 
-<!-- # Unsupervised classification (HCA and K-means) -->
+# Unsupervised classification (HCA and K-means)
 
-<!-- ##  -->
+## Overview
 
-<!-- **Objective**: [Group $n$ individuals into $K$ groups of individuals with common characteristics]{style="color:red"}: -->
+**Objective**: [Group $n$ individuals into $K$ groups of individuals with common characteristics]{style="color:red"}:
 
-<!-- -  each group should be as homogeneous as possible -->
+-  each group should be as homogeneous as possible
 
-<!-- -  members of a class are more similar to members of the same class than to members of other classes -->
+-  members of a class are more similar to members of the same class than to members of other classes
 
-<!-- **Unsupervised classification**: -->
+**Unsupervised classification**:
 
-<!-- - Descriptive purpose -->
+- Descriptive purpose
 
-<!-- - [No a priori knowledge about the groups]{style="color:red"} -->
+- [No a priori knowledge about the groups]{style="color:red"}
 
-<!-- - Is it justified to assume the existence of several groups of individuals? -->
+- Is it justified to assume the existence of several groups of individuals?
 
-<!-- - Question of the number of groups? [$K$ unknown]{style="color:red"} -->
+- Question of the number of groups? [$K$ unknown]{style="color:red"}
 
-<!-- ## Tools -->
+## Tools
 
-<!-- To classify, we need:  -->
+To classify, we need:
 
-<!-- - choose a similarity/dissimilarity measure -->
+- to choose a similarity/dissimilarity measure
 
-<!-- - choose a criterion to evaluate the homogeneity of the classes -->
+- to choose a criterion to evaluate the homogeneity of the classes
 
-<!-- - choose an algorithm -->
+- to choose an algorithm
 
-<!-- - sometimes also choose a number of classes composing the classification -->
+- to sometimes also choose a number of classes composing the classification
 
 
-<!-- ## Dissimilarity -->
+## Dissimilarity
 
-<!-- **Definition** -->
+**Definition**
 
-<!-- - $d(x_{1.},x_{2.}) = d(x_{2.},x_{1.}) \geq 0$ -->
+- $d(x_{1.},x_{2.}) = d(x_{2.},x_{1.}) \geq 0$
 
-<!-- - $d(x_{1.},x_{2.}) = 0 \Rightarrow x_{1.} = x_{2.}$ -->
+- $d(x_{1.},x_{2.}) = 0 \Rightarrow x_{1.} = x_{2.}$
 
-<!-- - **Example:** euclidian distance (the most used in practice) -->
+- **Example:** euclidian distance (the most used in practice)
 
-<!-- $$ -->
-<!-- d^2(x_{1.},x_{2.}) = \sum_{j=1}^{p}(x_{1j} - x_{2j})^2 -->
-<!-- $$ -->
+$$
+d^2(x_{1.},x_{2.}) = \sum_{j=1}^{p}(x_{1j} - x_{2j})^2
+$$
 
-<!-- - **Reminder:** -->
+**Reminder:**
 
-<!-- - normalization of variables (context dependent, scaling issues)  -->
+- normalization of variables 
 
-<!-- - **Course framework:** all variables have the same importance. -->
+- ontext dependent, scaling issues, do we need that all variables have the same importance,...
 
 
-<!-- ## Scatter plot -->
+## Scatter plot
 
-<!-- - **Mean** of a variable: -->
-<!-- $$ -->
-<!-- \bar{x}_{\cdot j} = \frac{1}{n}\sum_{i=1}^{n} x_{ij} \; , \; j=1,\ldots,p -->
-<!-- $$ -->
+- **Mean** of a variable:
+$$
+\bar{x}_{\cdot j} = \frac{1}{n}\sum_{i=1}^{n} x_{ij} \; , \; j=1,\ldots,p
+$$
 
-<!-- - **Center of gravity** of $X$ (overall average): -->
-<!-- $$ -->
-<!-- g = (\bar{x}_{\cdot 1}, \ldots, \bar{x}_{\cdot p}) -->
-<!-- $$ -->
+- **Center of gravity** of $X$ (overall average):
+$$
+g = (\bar{x}_{\cdot 1}, \ldots, \bar{x}_{\cdot p})
+$$
 
-<!-- - **Inertia** of $X$: -->
-<!-- $$ -->
-<!-- I_T = \sum_{i=1}^{n} d^2 (x_{i.},g) -->
-<!-- $$ -->
+- **Inertia** of $X$:
+$$
+I_T = \sum_{i=1}^{n} d^2 (x_{i.},g)
+$$
 
 
-<!-- ## Decomposition of the inertia -->
+## Decomposition of the inertia
 
-<!-- For a fixed number of groups $K$: -->
+For a fixed number of groups $K$:
 
-<!-- $$ -->
-<!-- \begin{eqnarray*} -->
-<!-- I_T & = & \sum_{i=1}^{n} d^2 (x_{i.},g)\\ -->
-<!-- & = & \underbrace{\sum_{k=1}^K \sum_{i \in C_k} d^2(x_{i.},g_k)}_{I_{intra}} + \underbrace{\sum_{k=1}^K n_k d^2(g_k,g)}_{I_{inter}} -->
-<!-- \end{eqnarray*} -->
-<!-- $$ -->
+$$
+\begin{eqnarray*}
+I_T & = & \sum_{i=1}^{n} d^2 (x_{i.},g)\\
+& = & \underbrace{\sum_{k=1}^K \sum_{i \in C_k} d^2(x_{i.},g_k)}_{I_{intra}} + \underbrace{\sum_{k=1}^K n_k d^2(g_k,g)}_{I_{inter}}
+\end{eqnarray*}
+$$
 
 
-<!-- - $g_k$: barycenter of the group $C_k$ -->
+- $g_k$: barycenter of the group $C_k$
 
-<!-- - $n_k$: number of individuals in the group $C_k$ -->
+- $n_k$: number of individuals in the group $C_k$
 
-<!-- - [$I_{intra}$: intra-group inertia]{style="color:red"} (dispersion of the points around their center in the different groups) -->
+- [$I_{intra}$: intra-group inertia]{style="color:red"} (dispersion of the points around their center in the different groups)
 
-<!-- - [$I_{inter}$: between-group inerti]{style="color:red"}(separability of groups) -->
+- [$I_{inter}$: between-group inertia]{style="color:red"}(separability of groups)
 
-<!-- **Remark:** this decomposition is only valid only if the chosen dissimilarity measure is the Euclidean distance. -->
+**Remark:** this decomposition is only valid if the chosen dissimilarity measure is the Euclidean distance.
 
-<!-- ## Objective of the classification -->
+## Objective of the classification
 
-<!-- **Objective of the classification:** -->
+**Objective of the classification:**
 
-<!-- $$ -->
-<!-- I_T = I_{intra} + I_{inter} -->
-<!-- $$ -->
+$$
+I_T = I_{intra} + I_{inter}
+$$
 
-<!-- For a given number of groups $K$, [maximize the inter-group inertia (minimize the intra-group inertia)]{style="color:red"}.  -->
+For a given number of groups $K$, [maximize the inter-group inertia (minimize the intra-group inertia)]{style="color:red"}.
 
-<!-- **Remark:** $I_T$ is constant for a given dataset. -->
+**Remark:** $I_T$ is constant for a given dataset.
 
-<!-- **Difficulty:** -->
+**Difficulty:**
 
-<!-- - the set of solutions is not visitable (of the order of the order of $K^n$) -->
+- we can't evaluate the complete set of possible classifications (of the order of $K^n$)
 
-<!-- - need to use clever solution space traversal algorithms -->
+- we need to use clever algorithms for exploring the solution space
 
-<!-- ## HAC -->
+## HAC
 
-<!-- - [H]{style="color:red"}ierarchical [A]{style="color:red"}scending [C]{style="color:red"}lassification -->
+- [H]{style="color:red"}ierarchical [A]{style="color:red"}scending [C]{style="color:red"}lassification
 
-<!-- - [Ascending]{style="color:red"} method: agglomeration of groups -->
+- [Ascending]{style="color:red"} method: agglomeration of groups
 
-<!-- - [Hierarchical]{style="color:red"} method: the successive partitions are nested within each other -->
+- [Hierarchical]{style="color:red"} method: the successive partitions are nested within each other
 
-<!-- - Algorithm:  -->
+- Algorithm:
 
-<!-- **Initialization:** each individual is a group ($I_{intra} = 0$) -->
+**Initialization:** each individual is a group ($I_{intra} = 0$)
 
-<!-- **One iteration:** merging two groups -->
+**One iteration:** merging two groups
 
-<!-- **End:** the $n$ individuals form a single group ($I_{intra} = I_T$) -->
+**End:** the $n$ individuals form a single group ($I_{intra} = I_T$)
 
-<!-- ## Choice of groups to merge -->
+## Choosing the groups to merge
 
-<!-- - The merging of two groups is associated with an [increase in intra-group variability]{style="color:red"}; it is desired that this increase be [as small as possible]{style="color:red"}. -->
+- Merging two groups is associated with an [increase in intra-group variability]{style="color:red"}; it is desired that this increase be [as small as possible]{style="color:red"}.
 
-<!-- - Increase of the intra-group variability induced by the merging of the $C_k$ and $C_l$ groups -->
+- Increase of the intra-group variability induced by the merging of the $C_k$ and $C_l$ groups
+$$
+\begin{eqnarray*}
+    \Delta & = & I_{intra} (C_k \cup C_l) - I_{intra} (C_k, C_l)\\
+    & = & \frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l)
+    \end{eqnarray*}
+$$
 
-<!-- $$ -->
-<!-- \begin{eqnarray*} -->
-<!--     \Delta & = & I_{intra} (C_k \cup C_l) - I_{intra} (C_k, C_l)\\ -->
-<!--     & = & \frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
-<!--     \end{eqnarray*} -->
-<!-- $$ -->
-<!-- - Dissimilarity between groups (Ward's distance) -->
-<!-- $$ -->
-<!-- d^2(C_k,C_l)=\frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
-<!-- $$ -->
 
+- Dissimilarity between groups (Ward's distance)
+$$
+d^2(C_k,C_l)=\frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l)
+$$
 
-<!-- ## Remark -->
 
-<!-- - Other possible dissimilarity measures? -->
+## Remark
 
-<!-- 1.  -->
 
-<!-- $$ -->
-<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{min}} \; d(x_{i.},x_{i'.}) -->
-<!-- $$ -->
+Other possible dissimilarity measures
 
-<!-- 2.  -->
-<!-- $$ -->
-<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{max}} \; d(x_{i.},x_{i'.}) -->
-<!-- $$ -->
+1. $d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{min}} \; d(x_{i.},x_{i'.})$
 
-<!-- 3. -->
-<!-- $$ -->
-<!-- d(C_k,C_l) = \frac{1}{n_l n_k}\sum_{x_{i.} \in C_k, x_{i'.}\in C_l}^{} \; d(x_{i.},x_{i'.}) -->
-<!-- $$ -->
+2. $d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{max}} \; d(x_{i.},x_{i'.})$
 
+3. $d(C_k,C_l) = \frac{1}{n_l n_k}\sum\limits_{x_{i.} \in C_k, x_{i'.}\in C_l}^{} \; d(x_{i.},x_{i'.})$
 
-<!-- ## Dendrogram -->
 
-<!-- - The partitions of the data obtained by the HAC are represented as a tree: [dendrogram]{style="color:red"}. -->
+## Dendrogram
 
-<!-- - Fusion of two elements: branch of height proportional to the percentage of inertia loss. -->
+- The partitions of the data obtained by the HAC are represented as a tree: [dendrogram]{style="color:red"}.
 
-<!-- - Determination of the number of groups: "big difference of inertia". -->
+- Fusion of two elements: branch of height proportional to the percentage of inertia loss.
 
-<!-- ## Example -->
+- Determination of the number of groups: "big difference of inertia".
 
+## Example
 
-<!-- ```{r dendro, fig.height=5, fig.width=5} -->
-<!-- tab<-scale(fromages[,-1], center=TRUE,scale=TRUE) -->
-<!-- data.dist <- dist(tab,method = "euclidean") -->
-<!-- data.ward <- hclust(data.dist,method="ward.D2") -->
-<!-- plot(data.ward,hang=-1) -->
-<!-- rect.hclust(data.ward,k=2) -->
-<!-- cluster <- cutree(data.ward, k = 2) -->
-<!-- ``` -->
 
-<!-- ## Interpretation of groups -->
+```{r dendro, fig.height=5, fig.width=5,echo=TRUE}
+tab<-scale(fromages[,-1], center=TRUE,scale=TRUE)
+data.dist <- dist(tab,method = "euclidean")
+data.ward <- hclust(data.dist,method="ward.D2")
+plot(data.ward,hang=-1)
+rect.hclust(data.ward,k=2)
+cluster <- cutree(data.ward, k = 2)
+```
 
+## Interpretation of the groups
 
-<!-- ```{r, fig.height=5, fig.width=5} -->
-<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
-<!-- ``` -->
 
-<!-- ## Example -->
+```{r, fig.height=5, fig.width=5,echo=TRUE}
+fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T)
+```
 
+## Example
 
-<!-- ```{r dendro2, fig.height=5, fig.width=5} -->
-<!-- plot(data.ward,hang=-1) -->
-<!-- rect.hclust(data.ward,k=3) -->
-<!-- cluster <- cutree(data.ward, k = 3) -->
-<!-- ``` -->
 
-<!-- ## Interpretation of groups -->
+```{r dendro2, fig.height=5, fig.width=5, echo=TRUE}
+plot(data.ward,hang=-1)
+rect.hclust(data.ward,k=3)
+cluster <- cutree(data.ward, k = 3)
+```
 
+## Interpretation of groups
 
-<!-- ```{r, fig.height=5, fig.width=5} -->
-<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
-<!-- ``` -->
 
-<!-- ## K-means method -->
+```{r, fig.height=5, fig.width=5,echo=TRUE}
+fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T)
+```
 
-<!-- - The number of groups $K$ is fixed a priori. -->
+## K-means method
 
-<!-- - Algorithm: -->
+- The number of groups $K$ is fixed a priori.
 
-<!-- **Initialization:** we choose $K$ centers of groups -->
-<!-- $\mu_1,\ldots,\mu_K$ among the individuals. -->
+- Algorithm:
 
-<!-- **One iteration:** -->
+**Initialization:** we choose $K$ centers of groups
+$\mu_1,\ldots,\mu_K$ among the individuals.
 
-<!-- Each individual is classified in the group whose center is closest. -->
+**One iteration:**
 
+Each individual is classified in the group whose center is closest.
 
-<!-- Definition of the new group centers as the barycenters of each group. -->
 
-<!-- **End:** "convergence'' -->
+Definition of the new group centers as the barycenters of each group.
 
+**End:** "convergence''
 
-<!-- ## Remark -->
 
-<!-- - "Convergence": decrease of the intra-group inertia at each iteration. -->
+## Remark
 
-<!-- - Faster algorithm than HAC. -->
+- "Convergence": decrease of the intra-group inertia at each iteration.
 
-<!-- - The result depends on the initialization. -->
+- Faster algorithm than HAC.
 
-<!-- - There is a wide variety of initialization modes, often random. -->
+- The result depends on the initialization.
 
+- There is a wide variety of initialization modes, often random.
 
-<!-- ## Example -->
 
+## Example
 
-<!-- ```{r kmeans} -->
-<!-- res.k.means <- kmeans(fromages[,-1],centers=3) -->
-<!-- res.k.means$centers -->
-<!-- res.k.means$size -->
-<!-- res.k.means$totss -->
-<!-- res.k.means$withinss -->
-<!-- res.k.means$tot.withinss -->
-<!-- res.k.means$betweenss -->
-<!-- ``` -->
 
-<!-- ## Example -->
+```{r kmeans, echo=T}
+res.k.means <- kmeans(fromages[,-1],centers=3)
+res.k.means$centers
+res.k.means$size
+res.k.means$totss
+res.k.means$withinss
+res.k.means$tot.withinss
+res.k.means$betweenss
+```
 
-<!-- ```{r, fig.height=5, fig.width=5} -->
-<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(res.k.means$cluster),repel=T) -->
-<!-- ``` -->
+## Example
 
-<!-- ## Choosing the number of groups -->
+```{r, fig.height=5, fig.width=5, echO=T}
+fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(res.k.means$cluster),repel=T)
+```
 
-<!-- - There is no classification that is strictly better than the others. -->
+## Choosing the number of groups
 
-<!-- - This means measuring the quality of each competing classification and often making compromises. -->
+- There is no classification that is strictly better than the others.
 
-<!-- - The interpretability of classes often plays a role. -->
+- This means measuring the quality of each competing classification and often making compromises.
 
+- The interpretability of classes often plays a role.
 
-<!-- ## Exemple -->
 
-<!-- ```{r} -->
-<!-- inertie.expl <- rep(0,times=10) -->
-<!-- for (k in 2:10){ -->
-<!--   clus <- kmeans(tab,centers=k,nstart=5) -->
-<!--   inertie.expl[k] <- clus$betweenss/clus$totss } -->
-<!-- plot(1:10,inertie.expl,type="b",xlab="Nb. de groupes",ylab="% inertie expliquée") -->
-<!-- ``` -->
+## Example
+
+```{r, echo=T}
+inertie.expl <- rep(0,times=10)
+for (k in 2:10){
+  clus <- kmeans(tab,centers=k,nstart=5)
+  inertie.expl[k] <- clus$betweenss/clus$totss }
+plot(1:10,inertie.expl,type="b",xlab="Nb. of groups",ylab="% explained inertia")
+```
 

@@ -1806,7 +1806,7 @@ g = (\bar{x}_{\cdot 1},\ldots,\bar{x}_{\cdot p})
 <h2>The space (the cloud) of variables</h2>
 <p>Geometrically, the quantitative variables in the data table <span class="math inline">\(X\)</span> correspond to <span class="math inline">\(p\)</span> points of <span class="math inline">\(\mathbf{R}^n\)</span>.</p>
 <ul>
-<li><p><span style="color:blue">Distance between variables</span>: scalar product <span class="math display">\[
+<li><p><span style="color:blue">Scalar product</span>: <span class="math display">\[
 &lt; x_{\cdot j_1}, x_{\cdot j_2} &gt; = \frac{1}{n} \sum_{i=1}^{n}   x_{i j_1} x_{i j_2}
 \]</span> <span class="math inline">\(\hookrightarrow\)</span> Expresses the <span style="color:blue">correlation</span> between the two variables (reduced case). Also a cosine.</p></li>
 <li><p>The <span style="color:blue">distance</span> between two variables is given by the norm associated with this scalar product <span class="math display">\[
@@ -1993,172 +1993,272 @@ Yaourtlaitent.nat. 0.634489274 0.312245808 0.94673508</code></pre>
 <p><img data-src="index_files/figure-revealjs/projind2-1.png" width="480"></p>
 </div>
 </div>
-<!-- # Unsupervised classification (HCA and K-means) -->
-<!-- ##  -->
-<!-- **Objective**: [Group $n$ individuals into $K$ groups of individuals with common characteristics]{style="color:red"}: -->
-<!-- -  each group should be as homogeneous as possible -->
-<!-- -  members of a class are more similar to members of the same class than to members of other classes -->
-<!-- **Unsupervised classification**: -->
-<!-- - Descriptive purpose -->
-<!-- - [No a priori knowledge about the groups]{style="color:red"} -->
-<!-- - Is it justified to assume the existence of several groups of individuals? -->
-<!-- - Question of the number of groups? [$K$ unknown]{style="color:red"} -->
-<!-- ## Tools -->
-<!-- To classify, we need:  -->
-<!-- - choose a similarity/dissimilarity measure -->
-<!-- - choose a criterion to evaluate the homogeneity of the classes -->
-<!-- - choose an algorithm -->
-<!-- - sometimes also choose a number of classes composing the classification -->
-<!-- ## Dissimilarity -->
-<!-- **Definition** -->
-<!-- - $d(x_{1.},x_{2.}) = d(x_{2.},x_{1.}) \geq 0$ -->
-<!-- - $d(x_{1.},x_{2.}) = 0 \Rightarrow x_{1.} = x_{2.}$ -->
-<!-- - **Example:** euclidian distance (the most used in practice) -->
-<!-- $$ -->
-<!-- d^2(x_{1.},x_{2.}) = \sum_{j=1}^{p}(x_{1j} - x_{2j})^2 -->
-<!-- $$ -->
-<!-- - **Reminder:** -->
-<!-- - normalization of variables (context dependent, scaling issues)  -->
-<!-- - **Course framework:** all variables have the same importance. -->
-<!-- ## Scatter plot -->
-<!-- - **Mean** of a variable: -->
-<!-- $$ -->
-<!-- \bar{x}_{\cdot j} = \frac{1}{n}\sum_{i=1}^{n} x_{ij} \; , \; j=1,\ldots,p -->
-<!-- $$ -->
-<!-- - **Center of gravity** of $X$ (overall average): -->
-<!-- $$ -->
-<!-- g = (\bar{x}_{\cdot 1}, \ldots, \bar{x}_{\cdot p}) -->
-<!-- $$ -->
-<!-- - **Inertia** of $X$: -->
-<!-- $$ -->
-<!-- I_T = \sum_{i=1}^{n} d^2 (x_{i.},g) -->
-<!-- $$ -->
-<!-- ## Decomposition of the inertia -->
-<!-- For a fixed number of groups $K$: -->
-<!-- $$ -->
-<!-- \begin{eqnarray*} -->
-<!-- I_T & = & \sum_{i=1}^{n} d^2 (x_{i.},g)\\ -->
-<!-- & = & \underbrace{\sum_{k=1}^K \sum_{i \in C_k} d^2(x_{i.},g_k)}_{I_{intra}} + \underbrace{\sum_{k=1}^K n_k d^2(g_k,g)}_{I_{inter}} -->
-<!-- \end{eqnarray*} -->
-<!-- $$ -->
-<!-- - $g_k$: barycenter of the group $C_k$ -->
-<!-- - $n_k$: number of individuals in the group $C_k$ -->
-<!-- - [$I_{intra}$: intra-group inertia]{style="color:red"} (dispersion of the points around their center in the different groups) -->
-<!-- - [$I_{inter}$: between-group inerti]{style="color:red"}(separability of groups) -->
-<!-- **Remark:** this decomposition is only valid only if the chosen dissimilarity measure is the Euclidean distance. -->
-<!-- ## Objective of the classification -->
-<!-- **Objective of the classification:** -->
-<!-- $$ -->
-<!-- I_T = I_{intra} + I_{inter} -->
-<!-- $$ -->
-<!-- For a given number of groups $K$, [maximize the inter-group inertia (minimize the intra-group inertia)]{style="color:red"}.  -->
-<!-- **Remark:** $I_T$ is constant for a given dataset. -->
-<!-- **Difficulty:** -->
+</section></section>
+<section>
+<section id="unsupervised-classification-hca-and-k-means" class="title-slide slide level1 center">
+<h1>Unsupervised classification (HCA and K-means)</h1>
 
-<!-- - the set of solutions is not visitable (of the order of the order of $K^n$) -->
-<!-- - need to use clever solution space traversal algorithms -->
-<!-- ## HAC -->
-<!-- - [H]{style="color:red"}ierarchical [A]{style="color:red"}scending [C]{style="color:red"}lassification -->
-<!-- - [Ascending]{style="color:red"} method: agglomeration of groups -->
-<!-- - [Hierarchical]{style="color:red"} method: the successive partitions are nested within each other -->
-<!-- - Algorithm:  -->
-<!-- **Initialization:** each individual is a group ($I_{intra} = 0$) -->
-<!-- **One iteration:** merging two groups -->
-<!-- **End:** the $n$ individuals form a single group ($I_{intra} = I_T$) -->
-<!-- ## Choice of groups to merge -->
-<!-- - The merging of two groups is associated with an [increase in intra-group variability]{style="color:red"}; it is desired that this increase be [as small as possible]{style="color:red"}. -->
-<!-- - Increase of the intra-group variability induced by the merging of the $C_k$ and $C_l$ groups -->
-<!-- $$ -->
-<!-- \begin{eqnarray*} -->
-<!--     \Delta & = & I_{intra} (C_k \cup C_l) - I_{intra} (C_k, C_l)\\ -->
-<!--     & = & \frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
-<!--     \end{eqnarray*} -->
-<!-- $$ -->
-<!-- - Dissimilarity between groups (Ward's distance) -->
-<!-- $$ -->
-<!-- d^2(C_k,C_l)=\frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l) -->
-<!-- $$ -->
-<!-- ## Remark -->
-<!-- - Other possible dissimilarity measures? -->
-<!-- 1.  -->
-<!-- $$ -->
-<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{min}} \; d(x_{i.},x_{i'.}) -->
-<!-- $$ -->
-<!-- 2.  -->
-<!-- $$ -->
-<!-- d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{max}} \; d(x_{i.},x_{i'.}) -->
-<!-- $$ -->
-<!-- 3. -->
-<!-- $$ -->
-<!-- d(C_k,C_l) = \frac{1}{n_l n_k}\sum_{x_{i.} \in C_k, x_{i'.}\in C_l}^{} \; d(x_{i.},x_{i'.}) -->
-<!-- $$ -->
-<!-- ## Dendrogram -->
-<!-- - The partitions of the data obtained by the HAC are represented as a tree: [dendrogram]{style="color:red"}. -->
-<!-- - Fusion of two elements: branch of height proportional to the percentage of inertia loss. -->
-<!-- - Determination of the number of groups: "big difference of inertia". -->
-<!-- ## Example -->
-<!-- ```{r dendro, fig.height=5, fig.width=5} -->
-<!-- tab<-scale(fromages[,-1], center=TRUE,scale=TRUE) -->
-<!-- data.dist <- dist(tab,method = "euclidean") -->
-<!-- data.ward <- hclust(data.dist,method="ward.D2") -->
-<!-- plot(data.ward,hang=-1) -->
-<!-- rect.hclust(data.ward,k=2) -->
-<!-- cluster <- cutree(data.ward, k = 2) -->
-<!-- ``` -->
-<!-- ## Interpretation of groups -->
-<!-- ```{r, fig.height=5, fig.width=5} -->
-<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
-<!-- ``` -->
-<!-- ## Example -->
-<!-- ```{r dendro2, fig.height=5, fig.width=5} -->
-<!-- plot(data.ward,hang=-1) -->
-<!-- rect.hclust(data.ward,k=3) -->
-<!-- cluster <- cutree(data.ward, k = 3) -->
-<!-- ``` -->
-<!-- ## Interpretation of groups -->
-<!-- ```{r, fig.height=5, fig.width=5} -->
-<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(cluster),repel=T) -->
-<!-- ``` -->
-<!-- ## K-means method -->
-<!-- - The number of groups $K$ is fixed a priori. -->
-<!-- - Algorithm: -->
-<!-- **Initialization:** we choose $K$ centers of groups -->
-<!-- $\mu_1,\ldots,\mu_K$ among the individuals. -->
-<!-- **One iteration:** -->
-<!-- Each individual is classified in the group whose center is closest. -->
-<!-- Definition of the new group centers as the barycenters of each group. -->
-<!-- **End:** "convergence'' -->
-<!-- ## Remark -->
-<!-- - "Convergence": decrease of the intra-group inertia at each iteration. -->
-<!-- - Faster algorithm than HAC. -->
-<!-- - The result depends on the initialization. -->
-<!-- - There is a wide variety of initialization modes, often random. -->
-<!-- ## Example -->
-<!-- ```{r kmeans} -->
-<!-- res.k.means <- kmeans(fromages[,-1],centers=3) -->
-<!-- res.k.means$centers -->
-<!-- res.k.means$size -->
-<!-- res.k.means$totss -->
-<!-- res.k.means$withinss -->
-<!-- res.k.means$tot.withinss -->
-<!-- res.k.means$betweenss -->
-<!-- ``` -->
-<!-- ## Example -->
-<!-- ```{r, fig.height=5, fig.width=5} -->
-<!-- fviz_pca_ind(acp.res,axes=c(1,2),habillage=as.factor(res.k.means$cluster),repel=T) -->
-<!-- ``` -->
-<!-- ## Choosing the number of groups -->
-<!-- - There is no classification that is strictly better than the others. -->
-<!-- - This means measuring the quality of each competing classification and often making compromises. -->
-<!-- - The interpretability of classes often plays a role. -->
-<!-- ## Exemple -->
-<!-- ```{r} -->
-<!-- inertie.expl <- rep(0,times=10) -->
-<!-- for (k in 2:10){ -->
-<!--   clus <- kmeans(tab,centers=k,nstart=5) -->
-<!--   inertie.expl[k] <- clus$betweenss/clus$totss } -->
-<!-- plot(1:10,inertie.expl,type="b",xlab="Nb. de groupes",ylab="% inertie expliquée") -->
-<!-- ``` -->
+</section>
+<section id="overview" class="slide level2">
+<h2>Overview</h2>
+<p><strong>Objective</strong>: <span style="color:red">Group <span class="math inline">\(n\)</span> individuals into <span class="math inline">\(K\)</span> groups of individuals with common characteristics</span>:</p>
+<ul>
+<li><p>each group should be as homogeneous as possible</p></li>
+<li><p>members of a class are more similar to members of the same class than to members of other classes</p></li>
+</ul>
+<p><strong>Unsupervised classification</strong>:</p>
+<ul>
+<li><p>Descriptive purpose</p></li>
+<li><p><span style="color:red">No a priori knowledge about the groups</span></p></li>
+<li><p>Is it justified to assume the existence of several groups of individuals?</p></li>
+<li><p>Question of the number of groups? <span style="color:red"><span class="math inline">\(K\)</span> unknown</span></p></li>
+</ul>
+</section>
+<section id="tools-1" class="slide level2">
+<h2>Tools</h2>
+<p>To classify, we need:</p>
+<ul>
+<li><p>to choose a similarity/dissimilarity measure</p></li>
+<li><p>to choose a criterion to evaluate the homogeneity of the classes</p></li>
+<li><p>to choose an algorithm</p></li>
+<li><p>to sometimes also choose a number of classes composing the classification</p></li>
+</ul>
+</section>
+<section id="dissimilarity" class="slide level2">
+<h2>Dissimilarity</h2>
+<p><strong>Definition</strong></p>
+<ul>
+<li><p><span class="math inline">\(d(x_{1.},x_{2.}) = d(x_{2.},x_{1.}) \geq 0\)</span></p></li>
+<li><p><span class="math inline">\(d(x_{1.},x_{2.}) = 0 \Rightarrow x_{1.} = x_{2.}\)</span></p></li>
+<li><p><strong>Example:</strong> euclidian distance (the most used in practice)</p></li>
+</ul>
+<p><span class="math display">\[
+d^2(x_{1.},x_{2.}) = \sum_{j=1}^{p}(x_{1j} - x_{2j})^2
+\]</span></p>
+<p><strong>Reminder:</strong></p>
+<ul>
+<li><p>normalization of variables</p></li>
+<li><p>ontext dependent, scaling issues, do we need that all variables have the same importance,…</p></li>
+</ul>
+</section>
+<section id="scatter-plot" class="slide level2">
+<h2>Scatter plot</h2>
+<ul>
+<li><p><strong>Mean</strong> of a variable: <span class="math display">\[
+\bar{x}_{\cdot j} = \frac{1}{n}\sum_{i=1}^{n} x_{ij} \; , \; j=1,\ldots,p
+\]</span></p></li>
+<li><p><strong>Center of gravity</strong> of <span class="math inline">\(X\)</span> (overall average): <span class="math display">\[
+g = (\bar{x}_{\cdot 1}, \ldots, \bar{x}_{\cdot p})
+\]</span></p></li>
+<li><p><strong>Inertia</strong> of <span class="math inline">\(X\)</span>: <span class="math display">\[
+I_T = \sum_{i=1}^{n} d^2 (x_{i.},g)
+\]</span></p></li>
+</ul>
+</section>
+<section id="decomposition-of-the-inertia" class="slide level2">
+<h2>Decomposition of the inertia</h2>
+<p>For a fixed number of groups <span class="math inline">\(K\)</span>:</p>
+<p><span class="math display">\[
+\begin{eqnarray*}
+I_T &amp; = &amp; \sum_{i=1}^{n} d^2 (x_{i.},g)\\
+&amp; = &amp; \underbrace{\sum_{k=1}^K \sum_{i \in C_k} d^2(x_{i.},g_k)}_{I_{intra}} + \underbrace{\sum_{k=1}^K n_k d^2(g_k,g)}_{I_{inter}}
+\end{eqnarray*}
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(g_k\)</span>: barycenter of the group <span class="math inline">\(C_k\)</span></p></li>
+<li><p><span class="math inline">\(n_k\)</span>: number of individuals in the group <span class="math inline">\(C_k\)</span></p></li>
+<li><p><span style="color:red"><span class="math inline">\(I_{intra}\)</span>: intra-group inertia</span> (dispersion of the points around their center in the different groups)</p></li>
+<li><p><span style="color:red"><span class="math inline">\(I_{inter}\)</span>: between-group inertia</span>(separability of groups)</p></li>
+</ul>
+<p><strong>Remark:</strong> this decomposition is only valid if the chosen dissimilarity measure is the Euclidean distance.</p>
+</section>
+<section id="objective-of-the-classification" class="slide level2">
+<h2>Objective of the classification</h2>
+<p><strong>Objective of the classification:</strong></p>
+<p><span class="math display">\[
+I_T = I_{intra} + I_{inter}
+\]</span></p>
+<p>For a given number of groups <span class="math inline">\(K\)</span>, <span style="color:red">maximize the inter-group inertia (minimize the intra-group inertia)</span>.</p>
+<p><strong>Remark:</strong> <span class="math inline">\(I_T\)</span> is constant for a given dataset.</p>
+<p><strong>Difficulty:</strong></p>
+<ul>
+<li><p>we can’t evaluate the complete set of possible classifications (of the order of <span class="math inline">\(K^n\)</span>)</p></li>
+<li><p>we need to use clever algorithms for exploring the solution space</p></li>
+</ul>
+</section>
+<section id="hac" class="slide level2">
+<h2>HAC</h2>
+<ul>
+<li><p><span style="color:red">H</span>ierarchical <span style="color:red">A</span>scending <span style="color:red">C</span>lassification</p></li>
+<li><p><span style="color:red">Ascending</span> method: agglomeration of groups</p></li>
+<li><p><span style="color:red">Hierarchical</span> method: the successive partitions are nested within each other</p></li>
+<li><p>Algorithm:</p></li>
+</ul>
+<p><strong>Initialization:</strong> each individual is a group (<span class="math inline">\(I_{intra} = 0\)</span>)</p>
+<p><strong>One iteration:</strong> merging two groups</p>
+<p><strong>End:</strong> the <span class="math inline">\(n\)</span> individuals form a single group (<span class="math inline">\(I_{intra} = I_T\)</span>)</p>
+</section>
+<section id="choosing-the-groups-to-merge" class="slide level2">
+<h2>Choosing the groups to merge</h2>
+<ul>
+<li><p>Merging two groups is associated with an <span style="color:red">increase in intra-group variability</span>; it is desired that this increase be <span style="color:red">as small as possible</span>.</p></li>
+<li><p>Increase of the intra-group variability induced by the merging of the <span class="math inline">\(C_k\)</span> and <span class="math inline">\(C_l\)</span> groups <span class="math display">\[
+\begin{eqnarray*}
+  \Delta &amp; = &amp; I_{intra} (C_k \cup C_l) - I_{intra} (C_k, C_l)\\
+  &amp; = &amp; \frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l)
+  \end{eqnarray*}
+\]</span></p></li>
+<li><p>Dissimilarity between groups (Ward’s distance) <span class="math display">\[
+d^2(C_k,C_l)=\frac{n_k n_l}{n_k + n_l} d^2(g_k,g_l)
+\]</span></p></li>
+</ul>
+</section>
+<section id="remark" class="slide level2">
+<h2>Remark</h2>
+<p>Other possible dissimilarity measures</p>
+<ol type="1">
+<li><p><span class="math inline">\(d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{min}} \; d(x_{i.},x_{i'.})\)</span></p></li>
+<li><p><span class="math inline">\(d(C_k,C_l) = \underset{x_{i.} \in C_k, x_{i'.}\in C_l}{\text{max}} \; d(x_{i.},x_{i'.})\)</span></p></li>
+<li><p><span class="math inline">\(d(C_k,C_l) = \frac{1}{n_l n_k}\sum\limits_{x_{i.} \in C_k, x_{i'.}\in C_l}^{} \; d(x_{i.},x_{i'.})\)</span></p></li>
+</ol>
+</section>
+<section id="dendrogram" class="slide level2">
+<h2>Dendrogram</h2>
+<ul>
+<li><p>The partitions of the data obtained by the HAC are represented as a tree: <span style="color:red">dendrogram</span>.</p></li>
+<li><p>Fusion of two elements: branch of height proportional to the percentage of inertia loss.</p></li>
+<li><p>Determination of the number of groups: “big difference of inertia”.</p></li>
+</ul>
+</section>
+<section id="example-2" class="slide level2">
+<h2>Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>tab<span class="ot">&lt;-</span><span class="fu">scale</span>(fromages[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">center=</span><span class="cn">TRUE</span>,<span class="at">scale=</span><span class="cn">TRUE</span>)</span>
+<span id="cb52-2"><a href="#cb52-2"></a>data.dist <span class="ot">&lt;-</span> <span class="fu">dist</span>(tab,<span class="at">method =</span> <span class="st">"euclidean"</span>)</span>
+<span id="cb52-3"><a href="#cb52-3"></a>data.ward <span class="ot">&lt;-</span> <span class="fu">hclust</span>(data.dist,<span class="at">method=</span><span class="st">"ward.D2"</span>)</span>
+<span id="cb52-4"><a href="#cb52-4"></a><span class="fu">plot</span>(data.ward,<span class="at">hang=</span><span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb52-5"><a href="#cb52-5"></a><span class="fu">rect.hclust</span>(data.ward,<span class="at">k=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/dendro-1.png" width="480"></p>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a>cluster <span class="ot">&lt;-</span> <span class="fu">cutree</span>(data.ward, <span class="at">k =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="interpretation-of-the-groups" class="slide level2">
+<h2>Interpretation of the groups</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="fu">fviz_pca_ind</span>(acp.res,<span class="at">axes=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">habillage=</span><span class="fu">as.factor</span>(cluster),<span class="at">repel=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.png" width="480"></p>
+</div>
+</div>
+</section>
+<section id="example-3" class="slide level2">
+<h2>Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1"></a><span class="fu">plot</span>(data.ward,<span class="at">hang=</span><span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb55-2"><a href="#cb55-2"></a><span class="fu">rect.hclust</span>(data.ward,<span class="at">k=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/dendro2-1.png" width="480"></p>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>cluster <span class="ot">&lt;-</span> <span class="fu">cutree</span>(data.ward, <span class="at">k =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="interpretation-of-groups" class="slide level2">
+<h2>Interpretation of groups</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a><span class="fu">fviz_pca_ind</span>(acp.res,<span class="at">axes=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">habillage=</span><span class="fu">as.factor</span>(cluster),<span class="at">repel=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="480"></p>
+</div>
+</div>
+</section>
+<section id="k-means-method" class="slide level2">
+<h2>K-means method</h2>
+<ul>
+<li><p>The number of groups <span class="math inline">\(K\)</span> is fixed a priori.</p></li>
+<li><p>Algorithm:</p></li>
+</ul>
+<p><strong>Initialization:</strong> we choose <span class="math inline">\(K\)</span> centers of groups <span class="math inline">\(\mu_1,\ldots,\mu_K\)</span> among the individuals.</p>
+<p><strong>One iteration:</strong></p>
+<p>Each individual is classified in the group whose center is closest.</p>
+<p>Definition of the new group centers as the barycenters of each group.</p>
+<p><strong>End:</strong> “convergence’’</p>
+</section>
+<section id="remark-1" class="slide level2">
+<h2>Remark</h2>
+<ul>
+<li><p>“Convergence”: decrease of the intra-group inertia at each iteration.</p></li>
+<li><p>Faster algorithm than HAC.</p></li>
+<li><p>The result depends on the initialization.</p></li>
+<li><p>There is a wide variety of initialization modes, often random.</p></li>
+</ul>
+</section>
+<section id="example-4" class="slide level2">
+<h2>Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>res.k.means <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(fromages[,<span class="sc">-</span><span class="dv">1</span>],<span class="at">centers=</span><span class="dv">3</span>)</span>
+<span id="cb58-2"><a href="#cb58-2"></a>res.k.means<span class="sc">$</span>centers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  calories   sodium  calcium  lipides  retinol   folates proteines cholesterol
+1 320.6667 288.5667 163.8867 26.38667 68.70667 16.253333  20.63333    78.66667
+2 364.2222 158.3333 257.8000 29.02222 61.95556  4.066667  26.16667    95.55556
+3 122.6000  67.8000 121.5600  8.72000 74.22000 19.380000   7.98000    24.60000
+  magnesium
+1  25.33333
+2  37.88889
+3  12.20000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a>res.k.means<span class="sc">$</span>size</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 15  9  5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a>res.k.means<span class="sc">$</span>totss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 763883.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a>res.k.means<span class="sc">$</span>withinss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 127801.31  70549.80  49380.94</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a>res.k.means<span class="sc">$</span>tot.withinss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 247732.1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1"></a>res.k.means<span class="sc">$</span>betweenss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 516151.2</code></pre>
+</div>
+</div>
+</section>
+<section id="example-5" class="slide level2">
+<h2>Example</h2>
+<div class="cell" data-echo="true">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="480"></p>
+</div>
+</div>
+</section>
+<section id="choosing-the-number-of-groups" class="slide level2">
+<h2>Choosing the number of groups</h2>
+<ul>
+<li><p>There is no classification that is strictly better than the others.</p></li>
+<li><p>This means measuring the quality of each competing classification and often making compromises.</p></li>
+<li><p>The interpretability of classes often plays a role.</p></li>
+</ul>
+</section>
+<section id="example-6" class="slide level2">
+<h2>Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1"></a>inertie.expl <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>,<span class="at">times=</span><span class="dv">10</span>)</span>
+<span id="cb70-2"><a href="#cb70-2"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>){</span>
+<span id="cb70-3"><a href="#cb70-3"></a>  clus <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(tab,<span class="at">centers=</span>k,<span class="at">nstart=</span><span class="dv">5</span>)</span>
+<span id="cb70-4"><a href="#cb70-4"></a>  inertie.expl[k] <span class="ot">&lt;-</span> clus<span class="sc">$</span>betweenss<span class="sc">/</span>clus<span class="sc">$</span>totss }</span>
+<span id="cb70-5"><a href="#cb70-5"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,inertie.expl,<span class="at">type=</span><span class="st">"b"</span>,<span class="at">xlab=</span><span class="st">"Nb. of groups"</span>,<span class="at">ylab=</span><span class="st">"% explained inertia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-25-1.png" width="960"></p>
+</div>
+</div>
 <p><img src="_extensions/davidcarayon/inrae/ressources/bloc-etat.png" class="slide-logo"></p>
 <div class="footer footer-default">
 
